@@ -21,6 +21,7 @@ var res = {
     selecao_jogo_divisao_fracao_png: 'res/selecao_jogo_divisao_fracao.png',
     selecao_jogo_voltar_png: 'res/voltar.png',
     voltar_branco_png: 'res/voltar_branco.png',
+    comecar_branco_png: 'res/comecar_branco.png',
     WhoLeftTheMilkOut_mp3: 'res/Music/WhoLeftTheMilkOut.mp3',
     GameBackground_png: 'res/GameBackground.png',
     derrota_png: 'res/derrota.png',
@@ -31,7 +32,10 @@ var res = {
     fracao_png: 'res/fracao.png',
     decimal_png: 'res/decimal.png',
     pedra_azul_png: 'res/pedra_azul.png',
-    pedra_laranja_png: 'res/pedra_laranja.png'
+    pedra_laranja_png: 'res/pedra_laranja.png',
+    pedra_branca_png: 'res/parte_branca.png',
+    pedra_cinza_png: 'res/parte_cinza.png',
+    RiversideRide_mp3: 'res/Music/RiversideRide.mp3'
 };
 
 var g_resources = [
