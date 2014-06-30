@@ -11,7 +11,22 @@
     "modules" : ["cocos2d"],
 
     "jsList" : [
+        "src/app.js",
+        "src/como_jogar.js",
+        "src/entrada_nome_vs_computador.js",
+        "src/entrada_nome_vs_jogador.js",
+        "src/game_over.js",
+        "src/intro.js",
+        "src/jogador_vs_computador.js",
+        "src/jogador_vs_jogador.js",
+        "src/opcoes.js",
+        "src/pedra.js",
         "src/resource.js",
-        "src/app.js"
+        "src/selecao_modo_jogador_vs_computador.js",
+        "src/selecao_modo_jogador_vs_jogador.js",
+        "src/sobre_jogo.js",
+        "src/tabuleiro.js",
+        "src/title.js"
+
     ]
 }

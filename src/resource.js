@@ -24,7 +24,9 @@ var res = {
     comecar_branco_png: 'res/comecar_branco.png',
     WhoLeftTheMilkOut_mp3: 'res/Music/WhoLeftTheMilkOut.mp3',
     GameBackground_png: 'res/GameBackground.png',
+    backspace_png: 'res/backspace.png',
     derrota_png: 'res/derrota.png',
+    bg_tecla_png: 'res/bg_tecla.png',
     vitoria_png: 'res/vitoria.png',
     EndGame_mp3: 'res/Music/EndGame.mp3',
     fundo_azul_png: 'res/fundo_azul.png',
@@ -35,7 +37,11 @@ var res = {
     pedra_laranja_png: 'res/pedra_laranja.png',
     pedra_branca_png: 'res/parte_branca.png',
     pedra_cinza_png: 'res/parte_cinza.png',
-    RiversideRide_mp3: 'res/Music/RiversideRide.mp3'
+    RiversideRide_mp3: 'res/Music/RiversideRide.mp3',
+    modo_automatico_png: 'res/modo_automatico.png',
+    modo_interativo_png: 'res/modo_interativo.png',
+    recomecar_png: 'res/recomecar.png',
+    sair_png: 'res/sair.png'
 };
 
 var g_resources = [
