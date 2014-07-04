@@ -56,7 +56,7 @@ var GameSceneJogadorVsComputador = cc.Scene.extend({
         cc.audioEngine.playMusic(res.RiversideRide_mp3, true);
 
         var size = cc.director.getWinSize();
-        this.tabuleiro = new Tabuleiro();
+        this.tabuleiro = new TabuleiroOffline();
         this.tabuleiro.init();
         this.tabuleiro.attr({
             x: size.width / 2 - ((size.width / 2) / 2),

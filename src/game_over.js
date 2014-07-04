@@ -40,9 +40,6 @@ var GameOverScene = cc.Scene.extend({
         }
 
 
-
-
-
         bg.attr({
             x: size.width / 2,
             y: size.height / 2,
@@ -53,7 +50,39 @@ var GameOverScene = cc.Scene.extend({
         layer.addChild(pontuacaoLabel, 5);
 
 
+        var voltar = cc.Sprite.create(res.voltar_branco_png);
+        voltar.attr({
+            x: size.width / 2,
+            y: size.height / 2 - 300,
+            scale: 0.5
+        });
+
+
+        var l = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function (touch, event) {
+
+                cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                var target = event.getCurrentTarget();
+
+                //Get the position of the current point relative to the button
+                var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                var s = target.getContentSize();
+                var rect = cc.rect(0, 0, s.width, s.height);
+
+                //Check the click area
+                if (cc.rectContainsPoint(rect, locationInNode)) {
+
+                    cc.director.runScene(cc.TransitionFade.create(0.5, new TitleScene()));
+                    return true;
+                }
+                return false;
+            }
+        });
+        cc.eventManager.addListener(l, voltar);
 
         this.addChild(layer);
+        this.addChild(voltar);
     }
 });
