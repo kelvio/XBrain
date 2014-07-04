@@ -248,7 +248,7 @@ function obterCaminhoMaisCurtoMelhorConquista(outer) {
 
                         if (alvo == null) {
 
-                            //alert(cc.getNumero() + " para " + linha + ", " + coluna);
+                            alert(cc.getNumero() + " para " + linha + ", " + coluna);
                             melhorJogada = [cc, linha, coluna];
                             break out;
 
