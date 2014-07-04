@@ -24,21 +24,14 @@ function checarFimDeJogo(outer) {
     }
 
 
-    if (numeroPedrasOponente == 0) {
+    if (numeroPedrasOponente == 0 || numeroPedrasJogador == 0) {
         //Fim de jogo
         var gameOverScene = new GameOverScene();
-        gameOverScene.init({ jogador: outer.getParent().getParent().dJogo.nomeJogador, sucesso: true, pontuacao: outer.getParent().getParent().dJogo.pontuacaoJogador});
+        gameOverScene.init({ jogador: outer.getParent().getParent().dJogo.nomeJogador, sucesso: (outer.getParent().getParent().dJogo.pontuacaoJogador > outer.getParent().getParent().dJogo.pontuacaoOponente), pontuacao: outer.getParent().getParent().dJogo.pontuacaoJogador});
         cc.director.runScene(cc.TransitionFade.create(0.5, gameOverScene));
         return true;
     }
 
-    if (numeroPedrasJogador == 0) {
-        //Fim de jogo
-        var gameOverScene = new GameOverScene();
-        gameOverScene.init({ jogador: outer.getParent().getParent().dJogo.nomeJogador, sucesso: false, pontuacao: outer.getParent().getParent().dJogo.pontuacaoJogador});
-        cc.director.runScene(cc.TransitionFade.create(0.5, gameOverScene));
-        return true;
-    }
 
     return false;
 
@@ -255,7 +248,7 @@ function obterCaminhoMaisCurtoMelhorConquista(outer) {
 
                         if (alvo == null) {
 
-                            alert(cc.getNumero() + " para " + linha + ", " + coluna);
+                            //alert(cc.getNumero() + " para " + linha + ", " + coluna);
                             melhorJogada = [cc, linha, coluna];
                             break out;
 
@@ -296,7 +289,7 @@ function obterMelhorConquistaPedrasPassiveisConquista(outer, pedrasPassiveis) {
             if (melhorConquista == null) {
                 melhorConquista = c;
             } else {
-                if (melhorConquista[0].getNumero() < c[0].getNumero() && melhorConquista[1].getNumero() > c[1].getNumero()) {
+                if (melhorConquista[1].getNumero() < c[1].getNumero()) {
                     melhorConquista = c;
                 }
             }
@@ -374,7 +367,7 @@ function fazerConquistaComputador(outer, movimento) {
     movimento[0].linha = alvo.linha;
 
     var numeroPedraJogador = alvo.getNumero();
-    var numeroPedraComputador = movimento[1].getNumero();
+    var numeroPedraComputador = movimento[0].getNumero();
 
 
     var resultado = 0;
@@ -661,6 +654,10 @@ var TabuleiroOffline = cc.Sprite.extend({
                                     return false;
                                 }
 
+
+                                if (outer.pedraSelecionada.linha < newPyt) {
+                                    return false;
+                                }
 
                                 var dirX = outer.pedraSelecionada.coluna < newPxt ? 120 : -120;
                                 var dirY = outer.pedraSelecionada.linha < newPyt ? -120 : 120;
