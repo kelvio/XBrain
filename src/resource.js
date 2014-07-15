@@ -41,7 +41,9 @@ var res = {
     modo_automatico_png: 'res/modo_automatico.png',
     modo_interativo_png: 'res/modo_interativo.png',
     recomecar_png: 'res/recomecar.png',
-    sair_png: 'res/sair.png'
+    sair_png: 'res/sair.png',
+    sim_png: 'res/sim.png',
+    nao_png: 'res/nao.png'
 };
 
 var g_resources = [

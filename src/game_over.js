@@ -2,6 +2,7 @@
 /* GameOver */
 var GameOverScene = cc.Scene.extend({
     _resultado:null,
+    operacao:null,
     init:function (resultado) {
         this._resultado = resultado;
         return true;
@@ -16,23 +17,100 @@ var GameOverScene = cc.Scene.extend({
 
         // add a "close" icon to exit the progress. it's an autorelease object
 
+        var nivel = 'Júnior';
+
+        this.operacao = this._resultado.operacao;
+        var p = this._resultado.pontuacao;
+
+        if (this.operacao == "soma") {
+
+            if (p < 20) {
+
+                nivel = 'Júnior'
+
+            } else if (p < 4) {
+
+                nivel = 'Pleno';
+
+            } else {
+
+                nivel = 'Sênior';
+
+            }
+
+
+        } else if (this.operacao == "subtracao") {
+
+
+            if (p < 10) {
+
+                nivel = 'Júnior'
+
+            } else if (p < 35) {
+
+                nivel = 'Pleno';
+
+            } else {
+
+                nivel = 'Sênior';
+
+            }
+
+        } else if (this.operacao == "multiplicacao") {
+
+
+            if (p < 100) {
+
+                nivel = 'Júnior'
+
+            } else if (p < 3) {
+
+                nivel = 'Pleno';
+
+            } else {
+
+                nivel = 'Sênior';
+
+            }
+
+        } else if (this.operacao == "divisao") {
+
+            if (p < 10) {
+
+                nivel = 'Júnior'
+
+            } else if (p < 20) {
+
+                nivel = 'Pleno';
+
+            } else {
+
+                nivel = 'Sênior';
+
+            }
+
+
+        }
+
+
         var bg = null;
         var resultadoLabel = null;
         if (this._resultado.sucesso) {
             bg = cc.Sprite.create(res.vitoria_png);
             resultadoLabel = cc.LabelTTF.create(this._resultado.jogador + ", você venceu!", "Arial", 160);
             layer.addChild(bg, 0);
-            var pontuacaoLabel = cc.LabelTTF.create("A sua pontuação é " + this._resultado.pontuacao + ".", "Arial", 70);
+            var pontuacaoLabel = cc.LabelTTF.create("A sua pontuação é " + this._resultado.pontuacao + "\nSeu nível é " + nivel, "Arial", 70);
+            pontuacaoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
             pontuacaoLabel.x = size.width / 2 + 200;
             pontuacaoLabel.y = size.height / 2;
             resultadoLabel.x = size.width / 2;
             resultadoLabel.y = size.height / 2 + 400;
         } else {
             bg = cc.Sprite.create(res.derrota_png);
-            resultadoLabel = cc.LabelTTF.create(this._resultado.jogador + ", você perdeu!", "Arial", 160);
+            resultadoLabel = cc.LabelTTF.create(this._resultado.jogador + ", você perdeu!" , "Arial", 160);
 
             layer.addChild(bg, 0);
-            var pontuacaoLabel = cc.LabelTTF.create("A sua pontuação é " + this._resultado.pontuacao + ".", "Arial", 70);
+            var pontuacaoLabel = cc.LabelTTF.create("A sua pontuação é " + this._resultado.pontuacao + ""  + "\nSeu nível é " + nivel, "Arial", 70);
             pontuacaoLabel.x = size.width / 2 - 500;
             pontuacaoLabel.y = size.height / 2;
             resultadoLabel.x = size.width / 2 - 180;

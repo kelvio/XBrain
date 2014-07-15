@@ -27,6 +27,8 @@
         "src/sobre_jogo.js",
         "src/offline/tabuleiro_offline.js",
         "src/online/tabuleiro_online.js",
+        "src/online/selecao_oponente.js",
+        "src/online/pedra_online.js",
         "src/title.js"
 
     ]

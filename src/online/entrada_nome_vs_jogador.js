@@ -121,23 +121,105 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
             res.comecar_branco_png,
             function() {
 
-
-                cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                var scene = new GameSceneJogadorVsComputador();
-                if (this._operacao == "soma") {
-                    scene.operacao = "+";
-                } else if (this._operacao == "subtracao") {
-                    scene.operacao = "-";
-                } else if (this._operacao == "multiplicacao") {
-                    scene.operacao = "x";
-                } else if (this._operacao == "divisao") {
-                    scene.operacao = "/";
-                    scene.opcao = this._opcao;
+                if (outer.nome.length == 0) {
+                    return;
                 }
 
-                scene.nomeJogador = outer.nome;
+                var layer = cc.Layer.create();
+                //BG
+                var bgSprite = cc.Sprite.create(res.fundo_azul_png);
+                bgSprite.attr({
+                    x: size.width / 2,
+                    y: size.height / 2,
+                    scale: 1.0
+                });
 
-                cc.director.runScene(cc.TransitionFade.create(0.5, scene));
+                var itemInterativo = cc.MenuItemImage.create(
+                    res.modo_interativo_png,
+                    res.modo_interativo_png,
+                    function() {
+                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                        var scene = new SelecaoOponenteScene();
+                        scene.modo = "interativo";
+                        if (this._operacao == "soma") {
+                            scene.operacao = "+";
+                        } else if (this._operacao == "subtracao") {
+                            scene.operacao = "-";
+                        } else if (this._operacao == "multiplicacao") {
+                            scene.operacao = "x";
+                        } else if (this._operacao == "divisao") {
+                            scene.operacao = "/";
+                            scene.opcao = this._opcao;
+                        }
+
+                        scene.nomeJogador = outer.nome;
+                        scene.interativo = true;
+                        cc.director.runScene(cc.TransitionFade.create(0.5, scene));
+                    },
+                    this
+                );
+                itemInterativo.attr({
+                    x: size.width / 2,
+                    y: size.height / 2 + 150,
+                    scale: 1.0
+                });
+
+                var itemAutomatico = cc.MenuItemImage.create(
+                    res.modo_automatico_png,
+                    res.modo_automatico_png,
+                    function() {
+                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                        var scene = new SelecaoOponenteScene();
+                        scene.modo = "automatico";
+                        if (this._operacao == "soma") {
+                            scene.operacao = "+";
+                        } else if (this._operacao == "subtracao") {
+                            scene.operacao = "-";
+                        } else if (this._operacao == "multiplicacao") {
+                            scene.operacao = "x";
+                        } else if (this._operacao == "divisao") {
+                            scene.operacao = "/";
+                            scene.opcao = this._opcao;
+                        }
+
+                        scene.nomeJogador = outer.nome;
+                        scene.interativo = false;
+
+                        cc.director.runScene(cc.TransitionFade.create(0.5, scene));
+                    },
+                    this
+                );
+                itemAutomatico.attr({
+                    x: size.width / 2,
+                    y: size.height / 2 - 100,
+                    scale: 1.0
+                });
+
+
+                var itemVoltar = cc.MenuItemImage.create(
+                    res.voltar_branco_png,
+                    res.voltar_branco_png,
+                    function() {
+                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                        outer.removeChild(layer);
+                    },
+                    this
+                );
+                itemVoltar.attr({
+                    x: size.width / 2,
+                    y: size.height / 2 - 300,
+                    scale: 0.8
+                });
+
+                var menu = cc.Menu.create(itemInterativo, itemAutomatico, itemVoltar);
+                menu.setPosition(0,0);
+
+
+                layer.addChild(bgSprite);
+                layer.addChild(menu);
+                outer.addChild(layer);
+
+
             },
             this
         );

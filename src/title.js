@@ -8,6 +8,9 @@ var TitleLayer = cc.Layer.extend({
         //////////////////////////////
         // 1. super init first
         this._super();
+
+
+
         return true;
     }
 });
