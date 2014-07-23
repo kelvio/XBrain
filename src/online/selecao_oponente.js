@@ -7,6 +7,7 @@
 /* SelecaoOponenteScene */
 var SelecaoOponenteScene = cc.Scene.extend({
 
+    infoLayer:null,
     socket:null,
 
     operacao:null,
@@ -73,7 +74,10 @@ var SelecaoOponenteScene = cc.Scene.extend({
 
                             outer.addChild(layer);
 
+                            outer.removeChild(outer.infoLayer);
+                            outer.infoLayer = layer;
                             outer.socket.emit('challenge', { id: jogador.id });
+
                             return true;
                         }
                         return false;
@@ -134,24 +138,30 @@ var SelecaoOponenteScene = cc.Scene.extend({
         var size = cc.director.getWinSize();
 
         var id = null;
-        this.socket = io.connect('http://177.67.83.46:8080');
+        //this.socket = io.connect('http://177.67.83.46:8080');
+        this.socket = io.connect('http://127.0.0.1:8080');
         this.socket.on('welcome', function (data) {
 
             id = data.id;
 
             if(data.message) {
-                setTimeout(function() {
-                    outer.atualizarLabelTopo(data.message);
-                }, 500);
+                outer.atualizarLabelTopo(data.message);
             }
 
 
         });
 
 
-
-
         this.socket.emit('data', { nome: this.nomeJogador, operacao: this.operacao, opcao: this.opcao, interativo: this.interativo });
+
+        this.socket.on('challenge-rejected', function() {
+            try {
+                outer.removeChild(outer.infoLayer);
+            } catch (e) {
+                alert(e);
+            }
+
+        });
 
         this.socket.on('challenge', function(data) {
 
@@ -245,22 +255,7 @@ var SelecaoOponenteScene = cc.Scene.extend({
                         //Desafia oponente
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
 
-                        var layer = cc.Layer.create();
-                        //BG
-                        var bgSprite = cc.Sprite.create(res.GameBackground_png);
-                        bgSprite.attr({
-                            x: size.width / 2,
-                            y: size.height / 2,
-                            scale: 0.7
-                        });
-                        layer.addChild(bgSprite);
-                        var label = cc.LabelTTF.create("Aguardando servidor...", "Arial", 60);
-                        label.x = size.width / 2;
-                        label.y = size.height / 2;
-                        label.setColor(cc.color(0, 0, 0));
-                        layer.addChild(label);
-
-                        outer.addChild(layer);
+                        outer.removeChild(layer);
 
                         outer.socket.emit('challenge-rejected', { id: data.id });
                         return true;
@@ -290,9 +285,7 @@ var SelecaoOponenteScene = cc.Scene.extend({
 
 
             if (data.players.length == 0) {
-                setTimeout(function(){
-                    outer.mostrarLabelAguardandoOutrosJogadores();
-                }, 700);
+                outer.mostrarLabelAguardandoOutrosJogadores();
 
             } else {
                 outer.removerLabelAguardandoOutrosJogadores();
@@ -364,6 +357,7 @@ var SelecaoOponenteScene = cc.Scene.extend({
                 //Check the click area
                 if (cc.rectContainsPoint(rect, locationInNode)) {
 
+                    outer.socket.disconnect();
                     cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                     cc.director.runScene(cc.TransitionFade.create(0.5, new TitleScene()));
                     return true;

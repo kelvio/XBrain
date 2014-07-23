@@ -17,8 +17,16 @@ var SobreOJogoLayer = cc.LayerColor.extend({
         });
         this.addChild(bgSprite);
 
+        var titulo = cc.LabelTTF.create("Sobre o jogo", "Arial", 55);
+        titulo.setColor(cc.color(119, 110, 101));
+        titulo.x = size.width / 2;
+        titulo.y = size.height / 2 + 490;
+        titulo.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        // add the label as a child to this layer
+        this.addChild(titulo, 6);
 
-        var texto = "          \"O XBrain é uma verdadeira obra para aprender e se divertir com a matemática.\n \
+
+        var texto = "\n           \"O XBrain é uma verdadeira obra para aprender e se divertir com a matemática.\n \
         Trata-se de um jogo que articula com perfeição e precisão os\n \
         princípios atuais e mais adequados acerca da aprendizagem e\n \
         desenvolvimento dos conceitos de quantificação, valores e equivalências\n \
@@ -36,11 +44,11 @@ var SobreOJogoLayer = cc.LayerColor.extend({
         Pedagoga - Especialista em Piscologia da Aprendizagem e do Desenvolvimento Humano\n \
         Educação Especial Psicopedagogia\n \
         Mestre em Psicologia pela Universidade Católica de Brasília / Pesquisadora da Educação \n \
-        Superior - CAPES / Ministério da Educação - Brazil.\n\n \
+        Superior - CAPES.\n\n \
         Brasilia-DF – Brasil";
 
         var sobreLabel = cc.LabelTTF.create(texto, "Arial", 30);
-        sobreLabel.setColor(cc.color(59, 196, 243));
+        sobreLabel.setColor(cc.color(119, 110, 101));
         //sobreLabel.setColor(cc.color3(255,0,0));
         sobreLabel.x = size.width / 2;
         sobreLabel.y = size.height / 2 + 50;

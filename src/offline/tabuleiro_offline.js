@@ -1,3 +1,4 @@
+var pJogo = [];
 function shuffle(o) { //v1.0
     for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
@@ -8,6 +9,8 @@ function checarFimDeJogo(outer) {
     var pedras = outer.getPedras();
     numeroPedrasOponente = 0;
     numeroPedrasJogador = 0;
+    var jogadorPodeSeMover = true;
+    var computadorPodeSeMover = true;
     for (i = 0; i < pedras.length; i++) {
         for (j = 0; j < pedras[i].length; j++) {
 
@@ -17,14 +20,75 @@ function checarFimDeJogo(outer) {
             }
             if (pedra.getCor() == "azul") {
                 numeroPedrasJogador++;
+
+                if (pedra.linha == 0) {
+                    jogadorPodeSeMover = false;
+
+                    //Verifica se existe uma pedra do oponente nas diagonais
+                    try {
+                        if (outer.getPedras()[pedra.linha + 1][pedra.coluna - 1].getCor() == "laranja") {
+                            computadorPodeSeMover = true;
+                        }
+                    } catch (e) {
+
+                    }
+
+                    try {
+                        if (outer.getPedras()[pedra.linha + 1][pedra.coluna + 1].getCor() == "laranja") {
+                            computadorPodeSeMover = true;
+                        }
+                    } catch (e) {
+
+                    }
+
+                } else {
+                    jogadorPodeSeMover = true;
+                }
+
             } else {
                 numeroPedrasOponente++;
+
+                if (pedra.linha == 7) {
+
+                    //Verifica se existe uma pedra do oponente nas diagonais
+                    try {
+                        if (outer.getPedras()[pedra.linha - 1][pedra.coluna - 1].getCor() == "azul") {
+                            computadorPodeSeMover = true;
+                        }
+                    } catch (e) {
+
+                    }
+
+                    try {
+                        if (outer.getPedras()[pedra.linha - 1][pedra.coluna + 1].getCor() == "azul") {
+                            computadorPodeSeMover = true;
+                        }
+                    } catch (e) {
+
+                    }
+
+
+                } else {
+                    computadorPodeSeMover = true;
+                }
             }
         }
     }
 
+    var fimJogo = false;
 
     if (numeroPedrasOponente == 0 || numeroPedrasJogador == 0) {
+        fimJogo =   true;
+    } else {
+        //Verifica se as pedras do jogador podem se mover, se não, fim de jogo
+        if (jogadorPodeSeMover && computadorPodeSeMover) {
+            fimJogo = false;
+        }
+    }
+
+
+
+    if (fimJogo) {
         //Fim de jogo
         var gameOverScene = new GameOverScene();
         gameOverScene.init({ jogador: outer.getParent().getParent().dJogo.nomeJogador, sucesso: (outer.getParent().getParent().dJogo.pontuacaoJogador > outer.getParent().getParent().dJogo.pontuacaoOponente), pontuacao: outer.getParent().getParent().dJogo.pontuacaoJogador});
@@ -32,6 +96,14 @@ function checarFimDeJogo(outer) {
         return true;
     }
 
+
+
+
+
+
+    setTimeout(function () {
+        outer.aguardarComputador = false;
+    }, 400);
 
     return false;
 
@@ -68,14 +140,14 @@ function atualizarPlacar(opcaoSelecionada, outer) {
         if (operacao == "-") {
             outer.getParent().getParent().dJogo.pontuacaoJogador += resultado;
         } else if (operacao == "/") {
-            outer.getParent().getParent().dJogo.pontuacaoJogador += numeroPedraOponente == 0 ? 0 : numeroPedraJogador / numeroPedraOponente;
+            outer.getParent().getParent().dJogo.pontuacaoJogador += Math.ceil(numeroPedraOponente == 0 ? 0 : numeroPedraJogador / numeroPedraOponente);
         } else {
             outer.getParent().getParent().dJogo.pontuacaoOponente += resultado;
         }
 
     } else {
         if (operacao == "/") {
-            outer.getParent().getParent().dJogo.pontuacaoJogador += numeroPedraOponente == 0 ? 0 : numeroPedraJogador / numeroPedraOponente;
+            outer.getParent().getParent().dJogo.pontuacaoJogador += Math.ceil(numeroPedraOponente == 0 ? 0 : numeroPedraJogador / numeroPedraOponente);
         } else {
             outer.getParent().getParent().dJogo.pontuacaoJogador += resultado;
         }
@@ -199,7 +271,15 @@ function obterCaminhoMaisCurtoMelhorConquista(outer) {
         pedrasComputador.sort(function(a, b){return b.getNumero() - a.getNumero()});
         pedrasJogador.sort(function(a, b){return b.getNumero() - a.getNumero()});
 
-        out:
+
+
+    } else {
+
+        pedrasComputador.sort(function(a, b){return a.getNumero() - b.getNumero()});
+        pedrasJogador.sort(function(a, b){return a.getNumero() - b.getNumero()});
+    }
+
+    out:
         for (var i = 0; i < pedrasComputador.length; i++) {
 
             var cc = pedrasComputador[i];
@@ -207,68 +287,119 @@ function obterCaminhoMaisCurtoMelhorConquista(outer) {
             if (cc.linha == 7) {
                 continue;
             }
+            in1:
             for (var j = 0; j < pedrasJogador.length; j++) {
 
                 var cj = pedrasJogador[j];
 
 
-                    var linha = null;
-                    if (cj.linha == cc.linha) {
-                        linha = cc.linha - 1;
-                    } else {
-                        linha = cj.linha > cc.linha ? cc.linha + 1 : cc.linha - 1;
+                var linha = null;
+                if (cj.linha == cc.linha) {
+                    linha = cc.linha - 1;
+                } else {
+                    linha = cj.linha > cc.linha ? cc.linha + 1 : cc.linha - 1;
+                }
+
+                if (linha == -1) {
+                    linha = 1;
+                }
+                if (linha == 8) {
+                    linha = 6;
+                }
+
+                if (linha < cc.linha) {
+
+                    if (pedrasComputador.length > 1) {
+                        continue in1;
                     }
 
-                    if (linha == -1) {
-                        linha = 1;
-                    }
-                    if (linha == 8) {
-                        linha = 6;
-                    }
+                }
+                var coluna = null;
+                if (cj.coluna == cc.coluna) {
+                    coluna = cc.coluna - 1;
+                } else {
+                    coluna = cj.coluna > cc.coluna ? cc.coluna + 1 : cc.coluna - 1;
+                }
 
-                    if (linha < cc.linha) {
-                        continue out;
-                    }
-                    var coluna = null;
-                    if (cj.coluna == cc.coluna) {
-                        coluna = cc.coluna - 1;
-                    } else {
-                        coluna = cj.coluna > cc.coluna ? cc.coluna + 1 : cc.coluna - 1;
-                    }
+                if (coluna == -1) {
+                    coluna = 1;
+                }
+                if (coluna == 10) {
+                    coluna = 8;
+                }
 
-                    if (coluna == -1) {
-                        coluna = 1;
-                    }
-                    if (coluna == 11) {
-                        coluna = 9;
-                    }
+                try {
+                    var alvo = outer.getPedras()[linha][coluna];
 
-                    try {
-                        var alvo = outer.getPedras()[linha][coluna];
 
-                        if (alvo == null) {
 
-                            alert(cc.getNumero() + " para " + linha + ", " + coluna);
-                            melhorJogada = [cc, linha, coluna];
-                            break out;
+                    if (alvo == null) {
 
+                        //Verifica se ao se fazer uma jogada a pedra atual se tornará vulnerável
+                        var vulneravel = false;
+
+                        if (outer.nivel == "dificil") {
+
+
+                            //Checa diagonal superior esquerda
+                            try {
+                                if (outer.getPedras()[linha - 1][coluna - 1].getCor() == "azul") {
+                                    vulneravel = true;
+                                }
+                            } catch (e) {
+
+                            }
+
+                            //Checa diagonal superior direita
+                            try {
+                                if (outer.getPedras()[linha - 1][coluna + 1].getCor() == "azul") {
+                                    vulneravel = true;
+                                }
+                            } catch (e) {
+
+                            }
+
+                            //Checa diagonal inferior direita
+                            try {
+                                if (outer.getPedras()[linha + 1][coluna + 1].getCor() == "azul") {
+                                    vulneravel = true;
+                                }
+                            } catch (e) {
+
+                            }
+
+                            //Checa diagonal inferior esquerda
+                            try {
+                                if (outer.getPedras()[linha + 1][coluna - 1].getCor() == "azul") {
+                                    vulneravel = true;
+                                }
+                            } catch (e) {
+
+                            }
                         }
 
-                    } catch (e) {
+
+                        if (vulneravel && pedrasComputador.length > 1) {
+                            melhorJogada = [cc, linha, coluna];
+                            continue in1;
+                        }
+
+                        if (coluna === 10 || coluna === -1) {
+                            continue out;
+                        }
+                        //alert(cc.getNumero() + " para " + linha + ", " + coluna);
+                        melhorJogada = [cc, linha, coluna];
+                        break out;
 
                     }
 
+                } catch (e) {
 
-
+                }
 
             }
 
         }
-
-    } else {
-
-
-    }
 
 
     return melhorJogada;
@@ -379,7 +510,7 @@ function fazerConquistaComputador(outer, movimento) {
     } else if (operacao === "x") {
         resultado = numeroPedraComputador * numeroPedraJogador;
     } else if (operacao === "/") {
-        resultado = numeroPedraJogador == 0 ? 0 : numeroPedraComputador / numeroPedraJogador;
+        resultado = Math.ceil(numeroPedraJogador == 0 ? 0 : numeroPedraComputador / numeroPedraJogador);
     }
 
     outer.getParent().getParent().dJogo.pontuacaoOponente += resultado;
@@ -415,11 +546,18 @@ function fazerMovimentoSimplesComputador(outer, movimento) {
 
 function moverPedraComputador(outer, movimento) {
 
-    if (movimento.length == 2) {
-        fazerConquistaComputador(outer, movimento);
-    } else {
-        fazerMovimentoSimplesComputador(outer, movimento);
+    try {
+        if (movimento != null ) {
+            if (movimento.length == 2) {
+                fazerConquistaComputador(outer, movimento);
+            } else {
+                fazerMovimentoSimplesComputador(outer, movimento);
+            }
+        }
+    } catch (e) {
+        //alert('moverPedraComputador:' + e);
     }
+
 
     /*var dirX = null;
     var dirY = null;
@@ -460,23 +598,26 @@ function moverPedraComputador(outer, movimento) {
  * @param outer
  */
 function fazerMovimentoComputador(outer) {
-    outer.aguardarComputador = true;
+    try {
+        outer.aguardarComputador = true;
 
-    //Quando for multiplicação ir atrás da maior pedra.
-    setTimeout(function () {
-
-
-        var melhorMovimento = obterMelhorMovimentoComputador(outer);
-        moverPedraComputador(outer, melhorMovimento);
-
-
-        checarFimDeJogo(outer);
-
+        //Quando for multiplicação ir atrás da maior pedra.
         setTimeout(function () {
-            outer.aguardarComputador = false;
-        }, 400);
 
-    }, 500);
+
+            var melhorMovimento = obterMelhorMovimentoComputador(outer);
+            moverPedraComputador(outer, melhorMovimento);
+
+
+            checarFimDeJogo(outer);
+
+
+
+        }, 500);
+    } catch (e) {
+        alert(e);
+    }
+
 };
 
 /**
@@ -486,11 +627,13 @@ var TabuleiroOffline = cc.Sprite.extend({
     _pedras: null,
     aguardarComputador: false,
     pedraSelecionada: null,
+    nivel:"facil",
     getPedras: function () {
         return this._pedras;
     },
     redefinirPedras: function () {
 
+        pJogo = [];
         if (this._pedras != null) {
             for (var i = 0; i < this._pedras.length; i++) {
                 for (var j = 0; j < this._pedras[i].length; j++) {
@@ -536,7 +679,7 @@ var TabuleiroOffline = cc.Sprite.extend({
         this._pedras = null;
         p = new Pedra();
         this._pedras = [
-            [p.laranja(nl[0], 0, 0), null, p.laranja(nl[1], 0, 2), null, p.laranja(nl[2], 0, 4), null, p.laranja(nl[3], 0, 6), null, p.laranja(nl[4], 0, 7), null, p.laranja(nl[5], 0, 9)],
+            [p.laranja(nl[0], 0, 0), null, p.laranja(nl[1], 0, 2), null, p.laranja(nl[2], 0, 4), null, p.laranja(nl[3], 0, 6), null, p.laranja(nl[4], 0, 8), null, p.laranja(nl[5], 0, 10)],
             [null, p.laranja(nl[6], 1, 1), null, p.laranja(nl[7], 1, 3), null, p.laranja(nl[8], 1, 5), null, p.laranja(nl[9], 1, 7), null, p.laranja(nl[10], 1, 9), null],
             [null, null, null, null, null, null, null, null, null, null, null],
             [null, null, null, null, null, null, null, null, null, null, null],
@@ -550,6 +693,7 @@ var TabuleiroOffline = cc.Sprite.extend({
                 var pedra = this._pedras[i][j];
                 if (pedra != null) {
                     this.addChild(pedra);
+                    pJogo.push(pedra);
 
                 }
             }
@@ -571,8 +715,8 @@ var TabuleiroOffline = cc.Sprite.extend({
     },
     init: function () {
 
-        var branca = function () {
-            var branca = bg = cc.Sprite.create(res.pedra_branca_png);
+        var branca = function (dir) {
+            var branca = bg = cc.Sprite.create(dir == undefined ? res.pedra_branca_png : dir == 0 ? res.pedra_branca_le_png : dir == 1 ? res.pedra_branca_ls_png : dir == 2 ? res.pedra_branca_ld_png : res.pedra_branca_li_png);
             branca.attr({
                 width: 120,
                 height: 120,
@@ -592,14 +736,14 @@ var TabuleiroOffline = cc.Sprite.extend({
         }
 
         var casas = [
-            [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+            [branca(0), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza(), branca(2)],
             [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-            [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+            [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
             [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-            [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+            [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
             [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-            [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
-            [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()]
+            [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
+            [cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza()]
         ];
 
         var outer = this;
@@ -650,20 +794,32 @@ var TabuleiroOffline = cc.Sprite.extend({
                                     }
 
 
+
+
                                 if (outer.pedraSelecionada == null) {
                                     return false;
                                 }
 
+                                if (!((outer.pedraSelecionada.linha + 1 == newPyt || outer.pedraSelecionada.linha - 1 == newPyt) && (outer.pedraSelecionada.coluna + 1 == newPxt || outer.pedraSelecionada.coluna - 1 == newPxt))) {
+                                    return false;
+                                }
 
                                 if (outer.pedraSelecionada.linha < newPyt) {
-                                    return false;
+
+                                    var pedraAlvo = outer.getPedras()[newPyt][newPxt];
+                                    if (pedraAlvo == null) {
+                                        return false;
+                                    } else if (pedraAlvo.getCor() == "azul") {
+                                        return false;
+                                    }
+
                                 }
 
                                 var dirX = outer.pedraSelecionada.coluna < newPxt ? 120 : -120;
                                 var dirY = outer.pedraSelecionada.linha < newPyt ? -120 : 120;
 
 
-                                if (outer.pedraSelecionada.getColuna() == 0 && dirX < 0 || outer.pedraSelecionada.getLinha() == 7 && dirX < 0) {
+                                if (outer.pedraSelecionada.getColuna() == 0 && dirX < 0 || outer.pedraSelecionada.getColuna() == 10 && dirX > 0) {
                                     return;
                                 }
 
@@ -787,23 +943,23 @@ var TabuleiroOffline = cc.Sprite.extend({
                                         bgSprite.addChild(pergunta);
 
 
-                                        opcaoA = cc.LabelTTF.create(alternativas[0] + "", "Arial", 130);
+                                        opcaoA = cc.LabelTTF.create((operacao == "/" ? alternativas[0].toFixed(2) : alternativas[0]) + "", "Arial", 130);
                                         opcaoA.x = bgSprite.width / 2 - 400;
                                         opcaoA.y = bgSprite.height - 400;
                                         opcaoA.setColor(cc.color(22, 22, 22));
 
 
-                                        opcaoB = cc.LabelTTF.create(alternativas[1] + "", "Arial", 130);
+                                        opcaoB = cc.LabelTTF.create((operacao == "/" ? alternativas[1].toFixed(2) : alternativas[1]) + "", "Arial", 130);
                                         opcaoB.x = bgSprite.width / 2 + 400;
                                         opcaoB.y = bgSprite.height - 400;
                                         opcaoB.setColor(cc.color(22, 22, 22));
 
-                                        opcaoC = cc.LabelTTF.create(alternativas[2] + "", "Arial", 130);
+                                        opcaoC = cc.LabelTTF.create((operacao == "/" ? alternativas[2].toFixed(2) : alternativas[2]) + "", "Arial", 130);
                                         opcaoC.x = bgSprite.width / 2 - 400;
                                         opcaoC.y = bgSprite.height - 800;
                                         opcaoC.setColor(cc.color(22, 22, 22));
 
-                                        opcaoD = cc.LabelTTF.create(alternativas[3] + "", "Arial", 130);
+                                        opcaoD = cc.LabelTTF.create((operacao == "/" ? alternativas[3].toFixed(2) : alternativas[3]) + "", "Arial", 130);
                                         opcaoD.x = bgSprite.width / 2 + 400;
                                         opcaoD.y = bgSprite.height - 800;
                                         opcaoD.setColor(cc.color(22, 22, 22));

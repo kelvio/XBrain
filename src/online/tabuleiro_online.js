@@ -32,11 +32,16 @@ var TabuleiroOnline = cc.Sprite.extend({
 
 
         if (numeroPedrasOponente == 0 || numeroPedrasJogador == 0) {
-            //Fim de jogo
-            var gameOverScene = new GameOverScene();
-            gameOverScene.init({ jogador: outer.getParent().getParent().nome, sucesso: (outer.getParent().getParent().pontuacao > outer.getParent().getParent().pontuacaoOponente), pontuacao: outer.getParent().getParent().pontuacaoJogador});
-            cc.director.runScene(cc.TransitionFade.create(0.5, gameOverScene));
-            return true;
+            try {
+                outer.socket.disconnect();
+                //Fim de jogo
+                var gameOverScene = new GameOverScene();
+                gameOverScene.init({ jogador: outer.getParent().getParent().nome, sucesso: (outer.getParent().getParent().pontuacao > outer.getParent().getParent().pontuacaoOponente), pontuacao: outer.getParent().getParent().pontuacaoJogador});
+                cc.director.runScene(cc.TransitionFade.create(0.5, gameOverScene));
+                return true;
+            } catch (e) {
+
+            }
         }
 
 
@@ -98,16 +103,16 @@ var TabuleiroOnline = cc.Sprite.extend({
             this._pedras = [
                 [null, p.azul(na[0], 0, 1), null, p.azul(na[1], 0, 3), null, p.azul(na[2], 0, 5), null, p.azul(na[3], 0, 7), null, p.azul(na[4], 0, 9), null],
                 [p.azul(na[5], 1, 0), null, p.azul(na[6], 1, 2), null, p.azul(na[7], 1, 4), null, p.azul(na[8], 1, 6), null, p.azul(na[9], 1, 8), null, p.azul(na[10], 1, 10)]
-                [null, null, null, null, null, null, null, null, null, null, null],
+                    [null, null, null, null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, null, null, null, null],
                 [null, p.laranja(nl[6], 6, 1), null, p.laranja(nl[7], 6, 3), null, p.laranja(nl[8], 6, 5), null, p.laranja(nl[9], 6, 7), null, p.laranja(nl[10], 6, 9), null],
-                [p.laranja(nl[0], 7, 0), null, p.laranja(nl[1], 7, 2), null, p.laranja(nl[2], 7, 4), null, p.laranja(nl[3], 7, 6), null, p.laranja(nl[4], 7, 7), null, p.laranja(nl[5], 7, 9)]
+                [p.laranja(nl[0], 7, 0), null, p.laranja(nl[1], 7, 2), null, p.laranja(nl[2], 7, 4), null, p.laranja(nl[3], 7, 6), null, p.laranja(nl[4], 7, 8), null, p.laranja(nl[5], 7, 10)]
             ];
         } else {
             this._pedras = [
-                [p.laranja(nl[0], 0, 0), null, p.laranja(nl[1], 0, 2), null, p.laranja(nl[2], 0, 4), null, p.laranja(nl[3], 0, 6), null, p.laranja(nl[4], 0, 7), null, p.laranja(nl[5], 0, 9)],
+                [p.laranja(nl[0], 0, 0), null, p.laranja(nl[1], 0, 2), null, p.laranja(nl[2], 0, 4), null, p.laranja(nl[3], 0, 6), null, p.laranja(nl[4], 0, 8), null, p.laranja(nl[5], 0, 10)],
                 [null, p.laranja(nl[6], 1, 1), null, p.laranja(nl[7], 1, 3), null, p.laranja(nl[8], 1, 5), null, p.laranja(nl[9], 1, 7), null, p.laranja(nl[10], 1, 9), null],
                 [null, null, null, null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, null, null, null, null],
@@ -146,6 +151,20 @@ var TabuleiroOnline = cc.Sprite.extend({
 
         var outer = this;
 
+        this.socket.on('oponent-quit', function(data) {
+
+
+            //Fim de jogo
+            var gameOverScene = new GameOverScene();
+            var pontuacao = outer.getParent().getParent().pontuacaoJogador;
+            if (pontuacao == undefined) {
+                pontuacao = 0;
+            }
+            gameOverScene.init({ jogador: outer.getParent().getParent().nome, sucesso: true, pontuacao: pontuacao});
+            cc.director.runScene(cc.TransitionFade.create(0.5, gameOverScene));
+
+        });
+
         this.socket.on('score', function(data) {
 
             var jogo = outer.getParent().getParent();
@@ -160,161 +179,162 @@ var TabuleiroOnline = cc.Sprite.extend({
         this.socket.on('prompt', function(data) {
 
 
-                var size = cc.director.getWinSize();
 
-                //Mostra diálogo de seleção de opções
-                var layer = cc.Layer.create();
+            var size = cc.director.getWinSize();
 
-                //BG
-                var bgSprite = cc.Sprite.create(res.GameBackground_png);
-                bgSprite.attr({
-                    x: size.width / 2,
-                    y: size.height / 2,
-                    scale: 0.2
-                });
-                var scaleToA = cc.ScaleTo.create(0.5, 0.5, 0.5);
-                bgSprite.runAction(cc.Sequence.create(scaleToA));
-                layer.addChild(bgSprite);
-                outer.getParent().addChild(layer);
+            //Mostra diálogo de seleção de opções
+            var layer = cc.Layer.create();
 
-                pergunta = cc.LabelTTF.create(data.questao, "Arial", 130);
-                pergunta.x = bgSprite.width / 2;
-                pergunta.y = bgSprite.height - 200;
-                pergunta.setColor(cc.color(59, 196, 243));
-                bgSprite.addChild(pergunta);
+            //BG
+            var bgSprite = cc.Sprite.create(res.GameBackground_png);
+            bgSprite.attr({
+                x: size.width / 2,
+                y: size.height / 2,
+                scale: 0.2
+            });
+            var scaleToA = cc.ScaleTo.create(0.5, 0.5, 0.5);
+            bgSprite.runAction(cc.Sequence.create(scaleToA));
+            layer.addChild(bgSprite);
+            outer.getParent().addChild(layer);
 
-
-                opcaoA = cc.LabelTTF.create(data.alternativaA, "Arial", 130);
-                opcaoA.x = bgSprite.width / 2 - 400;
-                opcaoA.y = bgSprite.height - 400;
-                opcaoA.setColor(cc.color(22, 22, 22));
+            pergunta = cc.LabelTTF.create(data.questao, "Arial", 130);
+            pergunta.x = bgSprite.width / 2;
+            pergunta.y = bgSprite.height - 200;
+            pergunta.setColor(cc.color(59, 196, 243));
+            bgSprite.addChild(pergunta);
 
 
-                opcaoB = cc.LabelTTF.create(data.alternativaB, "Arial", 130);
-                opcaoB.x = bgSprite.width / 2 + 400;
-                opcaoB.y = bgSprite.height - 400;
-                opcaoB.setColor(cc.color(22, 22, 22));
-
-                opcaoC = cc.LabelTTF.create(data.alternativaC, "Arial", 130);
-                opcaoC.x = bgSprite.width / 2 - 400;
-                opcaoC.y = bgSprite.height - 800;
-                opcaoC.setColor(cc.color(22, 22, 22));
-
-                opcaoD = cc.LabelTTF.create(data.alternativaD, "Arial", 130);
-                opcaoD.x = bgSprite.width / 2 + 400;
-                opcaoD.y = bgSprite.height - 800;
-                opcaoD.setColor(cc.color(22, 22, 22));
-
-                var l1 = cc.EventListener.create({
-                    event: cc.EventListener.TOUCH_ONE_BY_ONE,
-                    swallowTouches: true,
-                    onTouchBegan: function (touch, event) {
-
-                        var target = event.getCurrentTarget();
-
-                        //Get the position of the current point relative to the button
-                        var locationInNode = target.convertToNodeSpace(touch.getLocation());
-                        var s = target.getContentSize();
-                        var rect = cc.rect(0, 0, s.width, s.height);
+            opcaoA = cc.LabelTTF.create(data.alternativaA, "Arial", 130);
+            opcaoA.x = bgSprite.width / 2 - 400;
+            opcaoA.y = bgSprite.height - 400;
+            opcaoA.setColor(cc.color(22, 22, 22));
 
 
-                        //Se acertar você ganha pontos. Se você errar o adversário ganha pontos.
+            opcaoB = cc.LabelTTF.create(data.alternativaB, "Arial", 130);
+            opcaoB.x = bgSprite.width / 2 + 400;
+            opcaoB.y = bgSprite.height - 400;
+            opcaoB.setColor(cc.color(22, 22, 22));
+
+            opcaoC = cc.LabelTTF.create(data.alternativaC, "Arial", 130);
+            opcaoC.x = bgSprite.width / 2 - 400;
+            opcaoC.y = bgSprite.height - 800;
+            opcaoC.setColor(cc.color(22, 22, 22));
+
+            opcaoD = cc.LabelTTF.create(data.alternativaD, "Arial", 130);
+            opcaoD.x = bgSprite.width / 2 + 400;
+            opcaoD.y = bgSprite.height - 800;
+            opcaoD.setColor(cc.color(22, 22, 22));
+
+            var l1 = cc.EventListener.create({
+                event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                swallowTouches: true,
+                onTouchBegan: function (touch, event) {
+
+                    var target = event.getCurrentTarget();
+
+                    //Get the position of the current point relative to the button
+                    var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                    var s = target.getContentSize();
+                    var rect = cc.rect(0, 0, s.width, s.height);
 
 
-                        //Check the click area
-                        if (cc.rectContainsPoint(rect, locationInNode)) {
-                            outer.getParent().removeChild(layer);
-                            //atualizarPlacar(0, outer);
-                            //checarFimDeJogo(outer);
+                    //Se acertar você ganha pontos. Se você errar o adversário ganha pontos.
 
 
-                            outer.socket.emit('answer', {serverId: outer.serverId, a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "a"});
-                            return true;
-                        }
-                        return false;
+                    //Check the click area
+                    if (cc.rectContainsPoint(rect, locationInNode)) {
+                        outer.getParent().removeChild(layer);
+                        //atualizarPlacar(0, outer);
+                        //checarFimDeJogo(outer);
+
+
+                        outer.socket.emit('answer', {serverId: outer.serverId, cor: (outer.desafiado ? "laranja" : "azul"), a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "a"});
+                        return true;
                     }
-                });
-                cc.eventManager.addListener(l1, opcaoA);
+                    return false;
+                }
+            });
+            cc.eventManager.addListener(l1, opcaoA);
 
-                var l2 = cc.EventListener.create({
-                    event: cc.EventListener.TOUCH_ONE_BY_ONE,
-                    swallowTouches: true,
-                    onTouchBegan: function (touch, event) {
+            var l2 = cc.EventListener.create({
+                event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                swallowTouches: true,
+                onTouchBegan: function (touch, event) {
 
-                        var target = event.getCurrentTarget();
+                    var target = event.getCurrentTarget();
 
-                        //Get the position of the current point relative to the button
-                        var locationInNode = target.convertToNodeSpace(touch.getLocation());
-                        var s = target.getContentSize();
-                        var rect = cc.rect(0, 0, s.width, s.height);
+                    //Get the position of the current point relative to the button
+                    var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                    var s = target.getContentSize();
+                    var rect = cc.rect(0, 0, s.width, s.height);
 
 
-                        //Check the click area
-                        if (cc.rectContainsPoint(rect, locationInNode)) {
-                            outer.getParent().removeChild(layer);
-                            outer.socket.emit('answer', {serverId: outer.serverId, a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "b"});
-                            return true;
-                        }
-                        return false;
+                    //Check the click area
+                    if (cc.rectContainsPoint(rect, locationInNode)) {
+                        outer.getParent().removeChild(layer);
+                        outer.socket.emit('answer', {serverId: outer.serverId, cor: (outer.desafiado ? "laranja" : "azul"), a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "b"});
+                        return true;
                     }
-                });
-                cc.eventManager.addListener(l2, opcaoB);
+                    return false;
+                }
+            });
+            cc.eventManager.addListener(l2, opcaoB);
 
-                var l3 = cc.EventListener.create({
-                    event: cc.EventListener.TOUCH_ONE_BY_ONE,
-                    swallowTouches: true,
-                    onTouchBegan: function (touch, event) {
+            var l3 = cc.EventListener.create({
+                event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                swallowTouches: true,
+                onTouchBegan: function (touch, event) {
 
-                        var target = event.getCurrentTarget();
+                    var target = event.getCurrentTarget();
 
-                        //Get the position of the current point relative to the button
-                        var locationInNode = target.convertToNodeSpace(touch.getLocation());
-                        var s = target.getContentSize();
-                        var rect = cc.rect(0, 0, s.width, s.height);
+                    //Get the position of the current point relative to the button
+                    var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                    var s = target.getContentSize();
+                    var rect = cc.rect(0, 0, s.width, s.height);
 
 
-                        //Check the click area
-                        if (cc.rectContainsPoint(rect, locationInNode)) {
-                            outer.getParent().removeChild(layer);
-                            outer.socket.emit('answer', {serverId: outer.serverId, a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "c"});
-                            return true;
-                        }
-                        return false;
+                    //Check the click area
+                    if (cc.rectContainsPoint(rect, locationInNode)) {
+                        outer.getParent().removeChild(layer);
+                        outer.socket.emit('answer', {serverId: outer.serverId, cor: (outer.desafiado ? "laranja" : "azul"),  a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "c"});
+                        return true;
                     }
-                });
-                cc.eventManager.addListener(l3, opcaoC);
+                    return false;
+                }
+            });
+            cc.eventManager.addListener(l3, opcaoC);
 
-                var l4 = cc.EventListener.create({
-                    event: cc.EventListener.TOUCH_ONE_BY_ONE,
-                    swallowTouches: true,
-                    onTouchBegan: function (touch, event) {
+            var l4 = cc.EventListener.create({
+                event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                swallowTouches: true,
+                onTouchBegan: function (touch, event) {
 
-                        var target = event.getCurrentTarget();
+                    var target = event.getCurrentTarget();
 
-                        //Get the position of the current point relative to the button
-                        var locationInNode = target.convertToNodeSpace(touch.getLocation());
-                        var s = target.getContentSize();
-                        var rect = cc.rect(0, 0, s.width, s.height);
+                    //Get the position of the current point relative to the button
+                    var locationInNode = target.convertToNodeSpace(touch.getLocation());
+                    var s = target.getContentSize();
+                    var rect = cc.rect(0, 0, s.width, s.height);
 
 
-                        //Check the click area
-                        if (cc.rectContainsPoint(rect, locationInNode)) {
-                            outer.getParent().removeChild(layer);
-                            outer.socket.emit('answer', {serverId: outer.serverId, a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "d"});
-                            return true;
-                        }
-                        return false;
+                    //Check the click area
+                    if (cc.rectContainsPoint(rect, locationInNode)) {
+                        outer.getParent().removeChild(layer);
+                        outer.socket.emit('answer', {serverId: outer.serverId, cor: (outer.desafiado ? "laranja" : "azul"),  a: data.a, b: data.b, operador: data.operador, alternativaA: data.alternativaA, alternativaB: data.alternativaB, alternativaC: data.alternativaC, alternativaD: data.alternativaD, opcaoSelecionada: "d"});
+                        return true;
                     }
-                });
-                cc.eventManager.addListener(l4, opcaoD);
+                    return false;
+                }
+            });
+            cc.eventManager.addListener(l4, opcaoD);
 
 
-                bgSprite.addChild(opcaoA);
-                bgSprite.addChild(opcaoB);
-                bgSprite.addChild(opcaoC);
-                bgSprite.addChild(opcaoD);
+            bgSprite.addChild(opcaoA);
+            bgSprite.addChild(opcaoB);
+            bgSprite.addChild(opcaoC);
+            bgSprite.addChild(opcaoD);
 
-                layer.addChild(bgSprite);
+            layer.addChild(bgSprite);
 
         });
 
@@ -326,75 +346,75 @@ var TabuleiroOnline = cc.Sprite.extend({
             var dirY = data.dirY;
 
             out:
-            for (var linha = 0; linha < outer._pedras.length; linha++) {
+                for (var linha = 0; linha < outer._pedras.length; linha++) {
 
-                for (var coluna = 0; coluna < outer._pedras[linha].length; coluna++) {
+                    for (var coluna = 0; coluna < outer._pedras[linha].length; coluna++) {
 
-                    var pedra = outer._pedras[linha][coluna];
-                    if (pedra != null && pedra.getNumero() == data.numero && pedra.getCor() == data.cor) { //Move pedra
+                        var pedra = outer._pedras[linha][coluna];
+                        if (pedra != null && pedra.getNumero() == data.numero && pedra.getCor() == data.cor) { //Move pedra
 
-                        var novaColuna = dirX < 0 ? pedra.coluna - 1: pedra.coluna + 1;
-                        var novaLinha = null;
+                            var novaColuna = dirX < 0 ? pedra.coluna - 1: pedra.coluna + 1;
+                            var novaLinha = null;
 
-                        /*if (pedra.getCor() == "azul") { //Gato...
+                            /*if (pedra.getCor() == "azul") { //Gato...
 
-                            novaLinha = dirY > 0 ? pedra.linha + 1 : pedra.linha - 1;
-                        } else {*/
+                             novaLinha = dirY > 0 ? pedra.linha + 1 : pedra.linha - 1;
+                             } else {*/
                             novaLinha = dirY > 0 ? pedra.linha - 1 : pedra.linha + 1;
-                        //}
+                            //}
 
-                        //alert(pedra.getCor() + " - " + pedra.getNumero() + " movendo de " + pedra.linha + ":" + pedra.coluna + " para " + novaLinha + ":" + novaColuna);
-
-
-
-                        var newPxt = novaColuna;
-                        var newPyt = novaLinha;
+                            //alert(pedra.getCor() + " - " + pedra.getNumero() + " movendo de " + pedra.linha + ":" + pedra.coluna + " para " + novaLinha + ":" + novaColuna);
 
 
-                        outer._pedras[linha][coluna] = null;
-                        pedra.linha = novaLinha;
-                        pedra.coluna = novaColuna;
+
+                            var newPxt = novaColuna;
+                            var newPyt = novaLinha;
 
 
-                        try {
+                            outer._pedras[linha][coluna] = null;
+                            pedra.linha = novaLinha;
+                            pedra.coluna = novaColuna;
 
-                            //Infelizmente, outro gato...
-                            out2:
-                            for (var i = 0; i < outer._pedras.length; i++) {
-                                for (var j = 0; j < outer._pedras[i].length; j++) {
-                                    var p = outer._pedras[i][j];
-                                    if (p != null && p.getCor() != pedra.getCor() && p.linha == pedra.linha && p.coluna == pedra.coluna) {
 
-                                        outer._pedras[i][j] = null;
-                                        outer.removeChild(p);
-                                        break out2;
+                            try {
 
+                                //Infelizmente, outro gato...
+                                out2:
+                                    for (var i = 0; i < outer._pedras.length; i++) {
+                                        for (var j = 0; j < outer._pedras[i].length; j++) {
+                                            var p = outer._pedras[i][j];
+                                            if (p != null && p.getCor() != pedra.getCor() && p.linha == pedra.linha && p.coluna == pedra.coluna) {
+
+                                                outer._pedras[i][j] = null;
+                                                outer.removeChild(p);
+                                                break out2;
+
+                                            }
+                                        }
                                     }
-                                }
+
+                                outer._pedras[novaLinha][novaColuna] = pedra;
+                            } catch (e) {
+                                //alert(pedra.getNumero() + ":" + pedra.linha + "," + pedra.coluna);
                             }
 
-                            outer._pedras[novaLinha][novaColuna] = pedra;
-                        } catch (e) {
-                            //alert(pedra.getNumero() + ":" + pedra.linha + "," + pedra.coluna);
+                            //alert("valor da casa antiga :" + outer._pedras[linha][coluna] + ", valor da nova casa:" + outer._pedras[novaLinha][novaColuna]);
+                            pedra.runAction(cc.Spawn.create(cc.MoveBy.create(0.5, dirX, dirY)));
+
+                            break out;
                         }
 
-                        //alert("valor da casa antiga :" + outer._pedras[linha][coluna] + ", valor da nova casa:" + outer._pedras[novaLinha][novaColuna]);
-                        pedra.runAction(cc.Spawn.create(cc.MoveBy.create(0.5, dirX, dirY)));
-
-                        break out;
                     }
 
                 }
-
-            }
 
             outer.checarFimDeJogo();
         });
 
         this.desafiado = desafiado;
 
-        var branca = function() {
-            var branca = bg = cc.Sprite.create(res.pedra_branca_png);
+        var branca = function(dir) {
+            var branca = bg = cc.Sprite.create(dir == undefined ? res.pedra_branca_png : dir == 0 ? res.pedra_branca_le_png : dir == 1 ? res.pedra_branca_ls_png : dir == 2 ? res.pedra_branca_ld_png : res.pedra_branca_li_png);
             branca.attr({
                 width: 120,
                 height: 120,
@@ -423,26 +443,26 @@ var TabuleiroOnline = cc.Sprite.extend({
 
             casas = [
 
+                [cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza()],
+                [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
                 [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+                [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
                 [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+                [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
                 [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
-                [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()]
+                [branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(2)]
             ];
 
         } else {
             casas = [
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+                [branca(0), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1), cinza(), branca(1)],
                 [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+                [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
                 [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
+                [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
                 [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()],
-                [branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca()],
-                [cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza()]
+                [branca(0), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(), cinza(), branca(2)],
+                [cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza(), branca(3), cinza()]
             ];
         }
 
@@ -491,30 +511,30 @@ var TabuleiroOnline = cc.Sprite.extend({
                                                 if (casa == target) {
                                                     newPxt = j;
 
-                                                   /* if (outer.pedraSelecionada != null && outer.pedraSelecionada.getCor() == "laranja") {
+                                                    /* if (outer.pedraSelecionada != null && outer.pedraSelecionada.getCor() == "laranja") {
 
-                                                        if (i == 7) {
-                                                            newPyt = 0;
-                                                        } else if (i == 6) {
-                                                            newPyt = 1;
-                                                        } else if (i == 5) {
-                                                            newPyt = 2;
-                                                        } else if (i == 4) {
-                                                            newPyt = 3;
-                                                        } else if (i == 3) {
-                                                            newPyt = 4;
-                                                        } else if (i == 2) {
-                                                            newPyt = 5;
-                                                        } else if (i == 1) {
-                                                            newPyt = 6;
-                                                        } else if (i == 0) {
-                                                            newPyt
-                                                        }
+                                                     if (i == 7) {
+                                                     newPyt = 0;
+                                                     } else if (i == 6) {
+                                                     newPyt = 1;
+                                                     } else if (i == 5) {
+                                                     newPyt = 2;
+                                                     } else if (i == 4) {
+                                                     newPyt = 3;
+                                                     } else if (i == 3) {
+                                                     newPyt = 4;
+                                                     } else if (i == 2) {
+                                                     newPyt = 5;
+                                                     } else if (i == 1) {
+                                                     newPyt = 6;
+                                                     } else if (i == 0) {
+                                                     newPyt
+                                                     }
 
-                                                    } else {
+                                                     } else {
 
 
-                                                    }*/
+                                                     }*/
 
                                                     newPyt = i;
 
@@ -533,6 +553,9 @@ var TabuleiroOnline = cc.Sprite.extend({
                                 }
 
 
+                                if (!((outer.pedraSelecionada.linha + 1 == newPyt || outer.pedraSelecionada.linha - 1 == newPyt) && (outer.pedraSelecionada.coluna + 1 == newPxt || outer.pedraSelecionada.coluna - 1 == newPxt))) {
+                                    return false;
+                                }
 
 
 
@@ -550,19 +573,19 @@ var TabuleiroOnline = cc.Sprite.extend({
                                 //if (outer.pedraSelecionada.getCor() == "laranja" && (newPyt == 5 || newPyt == 6)) { //Infelizmente, gato
                                 //    dirY = outer.pedraSelecionada.linha < newPyt ? 120 : -120;
                                 //} else {
-                                    dirY = outer.pedraSelecionada.linha < newPyt ? -120 : 120;
+                                dirY = outer.pedraSelecionada.linha < newPyt ? -120 : 120;
                                 //}
 
 
                                 /*if (outer.desafiado) {
-                                    if (newPyt < outer.pedraSelecionada.linha) {
-                                        return false;
-                                    }
-                                } else {
-                                    if (newPyt > outer.pedraSelecionada.linha) {
-                                        return false;
-                                    }
-                                }*/
+                                 if (newPyt < outer.pedraSelecionada.linha) {
+                                 return false;
+                                 }
+                                 } else {
+                                 if (newPyt > outer.pedraSelecionada.linha) {
+                                 return false;
+                                 }
+                                 }*/
 
 
                                 var pedraAlvo = outer.getPedras()[newPyt][newPxt];
@@ -867,7 +890,7 @@ var TabuleiroOnline = cc.Sprite.extend({
                                 //Envia dados para o servidor
                                 outer.socket.emit('move', {
                                     serverId: outer.serverId,
-                                    cor:outer.pedraSelecionada.getCor(),
+                                    cor: outer.pedraSelecionada.getCor(),
                                     numero:outer.pedraSelecionada.getNumero(),
                                     dirX:dirX,
                                     dirY:dirY

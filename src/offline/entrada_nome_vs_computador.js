@@ -125,7 +125,6 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     return;
                 }
 
-                var layer = cc.Layer.create();
                 //BG
                 var bgSprite = cc.Sprite.create(res.fundo_laranja_png);
                 bgSprite.attr({
@@ -134,13 +133,65 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     scale: 1.0
                 });
 
-                var itemInterativo = cc.MenuItemImage.create(
-                    res.modo_interativo_png,
-                    res.modo_interativo_png,
+                //NIVEL
+                //BG
+                var bgSpriteNivel = cc.Sprite.create(res.fundo_laranja_png);
+                bgSpriteNivel.attr({
+                    x: size.width / 2,
+                    y: size.height / 2,
+                    scale: 1.0
+                });
+
+                var modo = "interativo";
+                var layerNivel = cc.Layer.create();
+                layerNivel.addChild(bgSpriteNivel, 1);
+
+                var tSn = cc.LabelTTF.create("SELECIONE UM NÍVEL", "Arial", 100);
+
+                tSn.x = size.width / 2;
+                tSn.y = size.height - 130;
+                tSn.setColor(cc.color(255, 255, 255));
+                tSn.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+
+                layerNivel.addChild(tSn, 2);
+                var itemFacil = cc.MenuItemImage.create(
+                    res.facil_png,
+                    res.facil_png,
                     function() {
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                         var scene = new GameSceneJogadorVsComputador();
-                        scene.modo = "interativo";
+                        scene.modo = modo;
+                        scene.nivel = "facil";
+                        if (this._operacao == "soma") {
+                            scene.operacao = "+";
+                        } else if (this._operacao == "subtracao") {
+                            scene.operacao = "-";
+                        } else if (this._operacao == "multiplicacao") {
+                            scene.operacao = "x";
+                        } else if (this._operacao == "divisao") {
+                            scene.operacao = "/";
+                            scene.opcao = this._opcao;
+                        }
+
+                        scene.nomeJogador = outer.nome;
+                        cc.director.runScene(cc.TransitionFade.create(0.5, scene));
+                    },
+                    this
+                );
+                itemFacil.attr({
+                    x: size.width / 2,
+                    y: size.height / 2 + 150,
+                    scale: 1.0
+                });
+
+                var itemDificil = cc.MenuItemImage.create(
+                    res.dificil_png,
+                    res.dificil_png,
+                    function() {
+                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                        var scene = new GameSceneJogadorVsComputador();
+                        scene.modo = modo;
+                        scene.nivel = "dificil";
                         if (this._operacao == "soma") {
                             scene.operacao = "+";
                         } else if (this._operacao == "subtracao") {
@@ -158,6 +209,50 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     },
                     this
                 );
+                itemDificil.attr({
+                    x: size.width / 2,
+                    y: size.height / 2 - 100,
+                    scale: 1.0
+                });
+
+
+                var itemVoltarNivel = cc.MenuItemImage.create(
+                    res.voltar_branco_png,
+                    res.voltar_branco_png,
+                    function() {
+                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                        outer.removeChild(layerNivel);
+                    },
+                    this
+                );
+                itemVoltarNivel.attr({
+                    x: size.width / 2,
+                    y: size.height / 2 - 300,
+                    scale: 0.8
+                });
+
+                var menuNivel = cc.Menu.create(itemFacil, itemDificil, itemVoltarNivel);
+                menuNivel.setPosition(0,0);
+
+
+                layerNivel.addChild(menuNivel, 3);
+
+                //MODO
+
+                var layer = cc.Layer.create();
+
+
+                var itemInterativo = cc.MenuItemImage.create(
+                    res.modo_interativo_png,
+                    res.modo_interativo_png,
+                    function() {
+                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                        var scene = new GameSceneJogadorVsComputador();
+                        modo = "interativo";
+                        outer.addChild(layerNivel);
+                    },
+                    this
+                );
                 itemInterativo.attr({
                     x: size.width / 2,
                     y: size.height / 2 + 150,
@@ -169,22 +264,8 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     res.modo_automatico_png,
                     function() {
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                        var scene = new GameSceneJogadorVsComputador();
-                        scene.modo = "automatico";
-                        if (this._operacao == "soma") {
-                            scene.operacao = "+";
-                        } else if (this._operacao == "subtracao") {
-                            scene.operacao = "-";
-                        } else if (this._operacao == "multiplicacao") {
-                            scene.operacao = "x";
-                        } else if (this._operacao == "divisao") {
-                            scene.operacao = "/";
-                            scene.opcao = this._opcao;
-                        }
-
-                        scene.nomeJogador = outer.nome;
-
-                        cc.director.runScene(cc.TransitionFade.create(0.5, scene));
+                        modo = "automatico";
+                        outer.addChild(layerNivel);
                     },
                     this
                 );

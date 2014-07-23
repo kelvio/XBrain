@@ -32,7 +32,9 @@ var SelecaoModoJogoJogadorVsJogadorLayer = cc.LayerColor.extend({
             res.selecao_jogo_soma_png,
             function() {
                 cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                cc.director.runScene(cc.TransitionFade.create(0.5, new EntradaNomeVsJogadorScene()));
+                var scene = new EntradaNomeVsJogadorScene();
+                scene.setOperacao("soma");
+                cc.director.runScene(cc.TransitionFade.create(0.5, scene));
             },
             this
         );
@@ -47,7 +49,9 @@ var SelecaoModoJogoJogadorVsJogadorLayer = cc.LayerColor.extend({
             res.selecao_jogo_subtracao_png,
             function() {
                 cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                cc.director.runScene(cc.TransitionFade.create(0.5, new EntradaNomeVsJogadorScene()));
+                var scene = new EntradaNomeVsJogadorScene();
+                scene.setOperacao("subtracao");
+                cc.director.runScene(cc.TransitionFade.create(0.5, scene));
             },
             this
         );
@@ -62,7 +66,9 @@ var SelecaoModoJogoJogadorVsJogadorLayer = cc.LayerColor.extend({
             res.selecao_jogo_multiplicacao_png,
             function() {
                 cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                cc.director.runScene(cc.TransitionFade.create(0.5, new EntradaNomeVsJogadorScene()));
+                var scene = new EntradaNomeVsJogadorScene();
+                scene.setOperacao("multiplicacao");
+                cc.director.runScene(cc.TransitionFade.create(0.5, scene));
             },
             this
         );
@@ -98,7 +104,7 @@ var SelecaoModoJogoJogadorVsJogadorLayer = cc.LayerColor.extend({
                     res.fracao_png,
                     function() {
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                        var scene = new EntradaNomeVsComputadorScene();
+                        var scene = new EntradaNomeVsJogadorScene();
                         scene.setOperacao("divisao");
                         scene.setOpcao("fracao");
                         cc.director.runScene(cc.TransitionFade.create(0.5, scene));
@@ -116,7 +122,7 @@ var SelecaoModoJogoJogadorVsJogadorLayer = cc.LayerColor.extend({
                     res.decimal_png,
                     function() {
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                        var scene = new EntradaNomeVsComputadorScene();
+                        var scene = new EntradaNomeVsJogadorScene();
                         scene.setOperacao("divisao");
                         scene.setOpcao("decimal");
                         cc.director.runScene(cc.TransitionFade.create(0.5, scene));

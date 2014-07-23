@@ -20,6 +20,7 @@ var GameSceneJogadorVsComputador = cc.Scene.extend({
     tabuleiro:null,
     labelJogador:null,
     labelComputador:null,
+    nivel:"facil",
     dJogo:null,
     atualizarPontuacao:function() {
         this.removeChild(this.labelJogador);
@@ -30,13 +31,13 @@ var GameSceneJogadorVsComputador = cc.Scene.extend({
 
         this.labelJogador.x = size.width / 2 - 400;
         this.labelJogador.y = size.height - 130;
-        this.labelJogador.setColor(cc.color(59, 196, 243));
+        this.labelJogador.setColor(cc.color(245, 183, 22));
         this.labelJogador.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
 
         this.labelComputador = cc.LabelTTF.create(this.dJogo.nomeOponente + "\n" + this.dJogo.pontuacaoOponente, "Arial", 100);
         this.labelComputador.x = size.width / 2 + 400;
         this.labelComputador.y = size.height - 130;
-        this.labelComputador.setColor(cc.color(244, 130, 48));
+        this.labelComputador.setColor(cc.color(240, 85, 66));
         this.labelComputador.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
 
         this.addChild(this.labelJogador);
@@ -63,6 +64,7 @@ var GameSceneJogadorVsComputador = cc.Scene.extend({
             y: 0,
             scale: 0.8
         });
+        this.tabuleiro.nivel = this.nivel;
 
 
         var bg = cc.Sprite.create(res.GameBackground_png);
@@ -80,20 +82,8 @@ var GameSceneJogadorVsComputador = cc.Scene.extend({
 
         this.tabuleiro.runAction(cc.Sequence.create(scaleToA));
 
-        this.labelJogador = cc.LabelTTF.create(this.dJogo.nomeJogador+ "\n" + this.dJogo.pontuacaoJogador, "Arial", 100);
-        this.labelJogador.x = size.width / 2 - 400;
-        this.labelJogador.y = size.height - 130;
-        this.labelJogador.setColor(cc.color(59, 196, 243));
-        this.labelJogador.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
-        this.addChild(this.labelJogador);
+        this.atualizarPontuacao();
 
-
-        this.labelComputador = cc.LabelTTF.create(this.dJogo.nomeOponente + "\n" + this.dJogo.pontuacaoJogador, "Arial", 100);
-        this.labelComputador.x = size.width / 2 + 400;
-        this.labelComputador.y = size.height - 130;
-        this.labelComputador.setColor(cc.color(244, 130, 48));
-        this.labelComputador.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
-        this.addChild(this.labelComputador);
 
 
 
@@ -101,7 +91,7 @@ var GameSceneJogadorVsComputador = cc.Scene.extend({
         var sair = cc.Sprite.create(res.sair_png);
         sair.attr({
             x: size.width / 2 + 700,
-            y: size.height / 2 - 100,
+            y: size.height / 2 - 200,
             scale: 1.0
         });
         this.addChild(sair, 0);

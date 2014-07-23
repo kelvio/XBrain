@@ -51,9 +51,9 @@ var TitleScene = cc.Scene.extend({
                 y: size.height / 2,
                 scale:0.32
             });
-            setTimeout(function() {
+            //setTimeout(function() {
                 logoSprite.runAction(cc.MoveBy.create(1.0, cc.p(0, size.height / 2 - 200)));
-            }, 2500);
+            //}, 2500);
         } else {
             logoSprite.attr({
                 x: size.width / 2,
@@ -75,7 +75,7 @@ var TitleScene = cc.Scene.extend({
         );
         itemJogadorVsComputador.attr({
             x: size.width / 2,
-            y: (size.height / 2) + 160,
+            y: (size.height / 2) + 110,
             scale: 1.0
         });
 
@@ -90,7 +90,7 @@ var TitleScene = cc.Scene.extend({
         );
         itemJogadorVsJogador.attr({
             x: size.width / 2,
-            y: size.height / 2 + 50,
+            y: size.height / 2,
             scale: 1.0
         });
 
@@ -105,7 +105,7 @@ var TitleScene = cc.Scene.extend({
         );
         itemComoJogar.attr({
             x: size.width / 2,
-            y: size.height / 2 - 120,
+            y: size.height / 2 - 130,
             scale: 1.0
         });
 
@@ -142,12 +142,12 @@ var TitleScene = cc.Scene.extend({
         var outer = this;
 
         if (!this._quiet) {
-            setTimeout(function() {
+            //setTimeout(function() {
                 var menu = cc.Menu.create(itemJogadorVsComputador, itemJogadorVsJogador, itemComoJogar, itemSobreOJogo);
                 menu.setPosition(0,0);
                 //menu.setVisible(false);
                 outer.addChild(menu);
-            }, 4000);
+            //}, 4000);
         } else {
             var menu = cc.Menu.create(itemJogadorVsComputador, itemJogadorVsJogador, itemComoJogar, itemSobreOJogo);
             menu.setPosition(0,0);

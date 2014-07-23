@@ -15,14 +15,20 @@ var GameSceneJogadorVsJogador = cc.Scene.extend({
         this.removeChild(this.labelJogador);
         this.removeChild(this.labelComputador);
 
+        var corDesafiante = cc.color(245, 183, 22);
+
+        var corDesafiado = cc.color(240, 85, 66);
+
+
+
         this.labelJogador = cc.LabelTTF.create(this.nome + "\n" + this.pontuacao, "Arial", 100);
         this.labelJogador.x = size.width / 2 - 400;
         this.labelJogador.y = size.height - 130;
 
         if (this.desafiado) {
-            this.labelJogador.setColor(cc.color(244, 130, 48));
+            this.labelJogador.setColor(corDesafiado);
         } else {
-            this.labelJogador.setColor(cc.color(59, 196, 243));
+            this.labelJogador.setColor(corDesafiante);
         }
 
         this.labelJogador.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
@@ -33,11 +39,12 @@ var GameSceneJogadorVsJogador = cc.Scene.extend({
         this.labelComputador.x = size.width / 2 + 400;
         this.labelComputador.y = size.height - 130;
 
+
         if (this.desafiado) {
-            this.labelComputador.setColor(cc.color(59, 196, 243));
+            this.labelComputador.setColor(corDesafiante);
         } else {
 
-            this.labelComputador.setColor(cc.color(244, 130, 48));
+            this.labelComputador.setColor(corDesafiado);
 
         }
 
@@ -111,7 +118,7 @@ var GameSceneJogadorVsJogador = cc.Scene.extend({
         var sair = cc.Sprite.create(res.sair_png);
         sair.attr({
             x: size.width / 2 + 700,
-            y: size.height / 2 - 100,
+            y: size.height / 2 - 200,
             scale: 1.0
         });
         this.addChild(sair, 0);
@@ -139,7 +146,9 @@ var GameSceneJogadorVsJogador = cc.Scene.extend({
                 //Check the click area
                 if (cc.rectContainsPoint(rect, locationInNode)) {
 
+                    outer.socket.disconnect();
                     cc.director.runScene(new TitleScene());
+
                     return true;
                 }
                 return false;

@@ -141,19 +141,21 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                         var scene = new SelecaoOponenteScene();
                         scene.modo = "interativo";
-                        if (this._operacao == "soma") {
-                            scene.operacao = "+";
-                        } else if (this._operacao == "subtracao") {
-                            scene.operacao = "-";
-                        } else if (this._operacao == "multiplicacao") {
-                            scene.operacao = "x";
-                        } else if (this._operacao == "divisao") {
-                            scene.operacao = "/";
+
+                        if (outer._operacao == "soma") {
+                            scene.operacao = "soma";
+                        } else if (outer._operacao == "subtracao") {
+                            scene.operacao = "subtracao";
+                        } else if (outer._operacao == "multiplicacao") {
+                            scene.operacao = "multiplicacao";
+                        } else if (outer._operacao == "divisao") {
+                            scene.operacao = "divisao";
                             scene.opcao = this._opcao;
                         }
 
                         scene.nomeJogador = outer.nome;
                         scene.interativo = true;
+
                         cc.director.runScene(cc.TransitionFade.create(0.5, scene));
                     },
                     this
@@ -171,13 +173,13 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                         var scene = new SelecaoOponenteScene();
                         scene.modo = "automatico";
-                        if (this._operacao == "soma") {
+                        if (outer._operacao == "soma") {
                             scene.operacao = "+";
-                        } else if (this._operacao == "subtracao") {
+                        } else if (outer._operacao == "subtracao") {
                             scene.operacao = "-";
-                        } else if (this._operacao == "multiplicacao") {
+                        } else if (outer._operacao == "multiplicacao") {
                             scene.operacao = "x";
-                        } else if (this._operacao == "divisao") {
+                        } else if (outer._operacao == "divisao") {
                             scene.operacao = "/";
                             scene.opcao = this._opcao;
                         }
