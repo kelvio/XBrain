@@ -115,6 +115,13 @@ var SelecaoModoJogoJogadorVsComputadorLayer = cc.LayerColor.extend({
                     scale: 1.0
                 });
 
+                var l = cc.LabelTTF.create(window.s.current.fracao, "Arial", 100);
+                l.x = itemFracao.width / 2;
+                l.y = itemFracao.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                l.setColor(cc.color(112, 112, 112));
+                itemFracao.addChild(l);
+
                 var itemDecimal = cc.MenuItemImage.create(
                     res.decimal_png,
                     res.decimal_png,
@@ -132,6 +139,14 @@ var SelecaoModoJogoJogadorVsComputadorLayer = cc.LayerColor.extend({
                     y: size.height / 2 - 100,
                     scale: 1.0
                 });
+
+
+                var l = cc.LabelTTF.create(window.s.current.decimal, "Arial", 100);
+                l.x = itemDecimal.width / 2;
+                l.y = itemDecimal.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                l.setColor(cc.color(112, 112, 112));
+                itemDecimal.addChild(l);
 
 
                 var itemVoltar = cc.MenuItemImage.create(

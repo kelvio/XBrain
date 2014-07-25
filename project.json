@@ -29,7 +29,9 @@
         "src/online/tabuleiro_online.js",
         "src/online/selecao_oponente.js",
         "src/online/pedra_online.js",
-        "src/title.js"
+        "src/title.js",
+        "src/idioma.js",
+        "src/strings.js"
 
     ]
 }

@@ -17,7 +17,7 @@ var GameOverScene = cc.Scene.extend({
 
         // add a "close" icon to exit the progress. it's an autorelease object
 
-        var nivel = 'Júnior';
+        var nivel = window.s.current.junior;
 
         this.operacao = this._resultado.operacao;
         var p = this._resultado.pontuacao;
@@ -26,15 +26,15 @@ var GameOverScene = cc.Scene.extend({
 
             if (p < 20) {
 
-                nivel = 'Júnior'
+                nivel = window.s.current.junior;
 
             } else if (p < 4) {
 
-                nivel = 'Pleno';
+                nivel = window.s.current.pleno;
 
             } else {
 
-                nivel = 'Sênior';
+                nivel = window.s.current.senior;
 
             }
 
@@ -44,15 +44,15 @@ var GameOverScene = cc.Scene.extend({
 
             if (p < 10) {
 
-                nivel = 'Júnior'
+                nivel = window.s.current.junior;
 
             } else if (p < 35) {
 
-                nivel = 'Pleno';
+                nivel = window.s.current.pleno;
 
             } else {
 
-                nivel = 'Sênior';
+                nivel = window.s.current.senior;
 
             }
 
@@ -61,15 +61,15 @@ var GameOverScene = cc.Scene.extend({
 
             if (p < 100) {
 
-                nivel = 'Júnior'
+                nivel = window.s.current.junior;
 
             } else if (p < 3) {
 
-                nivel = 'Pleno';
+                nivel = window.s.current.pleno;
 
             } else {
 
-                nivel = 'Sênior';
+                nivel = window.s.current.senior;
 
             }
 
@@ -77,15 +77,15 @@ var GameOverScene = cc.Scene.extend({
 
             if (p < 10) {
 
-                nivel = 'Júnior'
+                nivel = window.s.current.junior;
 
             } else if (p < 20) {
 
-                nivel = 'Pleno';
+                nivel = window.s.current.pleno;
 
             } else {
 
-                nivel = 'Sênior';
+                nivel = window.s.current.senior;
 
             }
 
@@ -97,9 +97,9 @@ var GameOverScene = cc.Scene.extend({
         var resultadoLabel = null;
         if (this._resultado.sucesso) {
             bg = cc.Sprite.create(res.vitoria_png);
-            resultadoLabel = cc.LabelTTF.create(this._resultado.jogador + ", você venceu!", "Arial", 160);
+            resultadoLabel = cc.LabelTTF.create(window.s.current.voce_venceu, "Arial", 160);
             layer.addChild(bg, 0);
-            var pontuacaoLabel = cc.LabelTTF.create("A sua pontuação é " + this._resultado.pontuacao + "\nSeu nível é " + nivel, "Arial", 70);
+            var pontuacaoLabel = cc.LabelTTF.create(window.s.current.sua_pontuacao_e + " " +  this._resultado.pontuacao + "\n" +  window.s.current.seu_nivel_e + " " + nivel, "Arial", 70);
             pontuacaoLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
             pontuacaoLabel.x = size.width / 2 + 200;
             pontuacaoLabel.y = size.height / 2;
@@ -107,10 +107,10 @@ var GameOverScene = cc.Scene.extend({
             resultadoLabel.y = size.height / 2 + 400;
         } else {
             bg = cc.Sprite.create(res.derrota_png);
-            resultadoLabel = cc.LabelTTF.create(this._resultado.jogador + ", você perdeu!" , "Arial", 160);
+            resultadoLabel = cc.LabelTTF.create(window.s.current.voce_perdeu , "Arial", 160);
 
             layer.addChild(bg, 0);
-            var pontuacaoLabel = cc.LabelTTF.create("A sua pontuação é " + this._resultado.pontuacao + ""  + "\nSeu nível é " + nivel, "Arial", 70);
+            var pontuacaoLabel = cc.LabelTTF.create(window.s.current.sua_pontuacao_e + " " + this._resultado.pontuacao + "\n" + window.s.current.seu_nivel_e + " " + nivel, "Arial", 70);
             pontuacaoLabel.x = size.width / 2 - 500;
             pontuacaoLabel.y = size.height / 2;
             resultadoLabel.x = size.width / 2 - 180;
@@ -135,13 +135,19 @@ var GameOverScene = cc.Scene.extend({
             scale: 0.5
         });
 
+        var l = cc.LabelTTF.create(window.s.current.voltar, "Arial", 100);
+        l.x = voltar.width / 2;
+        l.y = voltar.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        voltar.addChild(l);
+
 
         var l = cc.EventListener.create({
             event: cc.EventListener.TOUCH_ONE_BY_ONE,
             swallowTouches: true,
             onTouchBegan: function (touch, event) {
 
-                cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+
                 var target = event.getCurrentTarget();
 
                 //Get the position of the current point relative to the button
@@ -152,6 +158,7 @@ var GameOverScene = cc.Scene.extend({
                 //Check the click area
                 if (cc.rectContainsPoint(rect, locationInNode)) {
 
+                    cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                     cc.director.runScene(cc.TransitionFade.create(0.5, new TitleScene()));
                     return true;
                 }

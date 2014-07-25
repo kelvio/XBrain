@@ -79,6 +79,14 @@ var TitleScene = cc.Scene.extend({
             scale: 1.0
         });
 
+        var l = cc.LabelTTF.create(s.current.jogador_vs_computador, "Arial", 40);
+        l.x = itemJogadorVsComputador.width / 2;
+        l.y = itemJogadorVsComputador.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemJogadorVsComputador.addChild(l);
+
+
+
         var itemJogadorVsJogador = cc.MenuItemImage.create(
             res.jogador_x_jogador_png,
             res.jogador_x_jogador_png,
@@ -94,6 +102,12 @@ var TitleScene = cc.Scene.extend({
             scale: 1.0
         });
 
+        var l = cc.LabelTTF.create(s.current.jogador_vs_jogador, "Arial", 40);
+        l.x = itemJogadorVsJogador.width / 2;
+        l.y = itemJogadorVsJogador.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemJogadorVsJogador.addChild(l);
+
         var itemComoJogar = cc.MenuItemImage.create(
             res.como_jogar_png,
             res.como_jogar_png,
@@ -108,6 +122,14 @@ var TitleScene = cc.Scene.extend({
             y: size.height / 2 - 130,
             scale: 1.0
         });
+
+        var l = cc.LabelTTF.create(s.current.como_jogar, "Arial", 40);
+        l.x = itemComoJogar.width / 2;
+        l.y = itemComoJogar.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemComoJogar.addChild(l);
+
+
 
         /*var itemOpcoes = cc.MenuItemImage.create(
          res.opcoes_png,
@@ -139,17 +161,44 @@ var TitleScene = cc.Scene.extend({
             scale: 1.0
         });
 
+        var l = cc.LabelTTF.create(s.current.sobre_o_jogo, "Arial", 40);
+        l.x = itemSobreOJogo.width / 2;
+        l.y = itemSobreOJogo.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemSobreOJogo.addChild(l);
+
+        var itemIdioma = cc.MenuItemImage.create(
+            res.sobre_o_jogo_png,
+            res.sobre_o_jogo_png,
+            function() {
+                cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
+                cc.director.runScene(cc.TransitionFade.create(0.5, new IdiomaScene()));
+            },
+            this
+        );
+        itemIdioma.attr({
+            x: size.width / 2,
+            y: size.height / 2  - 350,
+            scale: 1.0
+        });
+
+        var l = cc.LabelTTF.create(s.current.idioma, "Arial", 40);
+        l.x = itemIdioma.width / 2;
+        l.y = itemIdioma.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemIdioma.addChild(l);
+
         var outer = this;
 
         if (!this._quiet) {
             //setTimeout(function() {
-                var menu = cc.Menu.create(itemJogadorVsComputador, itemJogadorVsJogador, itemComoJogar, itemSobreOJogo);
+                var menu = cc.Menu.create(itemJogadorVsComputador, itemJogadorVsJogador, itemComoJogar, itemSobreOJogo, itemIdioma);
                 menu.setPosition(0,0);
                 //menu.setVisible(false);
                 outer.addChild(menu);
             //}, 4000);
         } else {
-            var menu = cc.Menu.create(itemJogadorVsComputador, itemJogadorVsJogador, itemComoJogar, itemSobreOJogo);
+            var menu = cc.Menu.create(itemJogadorVsComputador, itemJogadorVsJogador, itemComoJogar, itemSobreOJogo, itemIdioma);
             menu.setPosition(0,0);
             this.addChild(menu);
         }

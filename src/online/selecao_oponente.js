@@ -116,14 +116,14 @@ var SelecaoOponenteScene = cc.Scene.extend({
     atualizarLabelTopo:function(texto) {
         var size = cc.director.getWinSize();
         this.removeChild(this.labelTopo);
-        this.labelTopo = cc.LabelTTF.create(texto, "Arial", 110);
+        this.labelTopo = cc.LabelTTF.create(window.s.current.escolha_um_oponente, "Arial", 110);
         this.labelTopo.x = size.width / 2;
         this.labelTopo.y = size.height / 2 + 450;
         this.addChild(this.labelTopo);
     },
     mostrarLabelAguardandoOutrosJogadores: function() {
         var size = cc.director.getWinSize();
-        this.labelAguardandoJogadores = cc.LabelTTF.create("Aguardando outros jogadores...", "Arial", 80);
+        this.labelAguardandoJogadores = cc.LabelTTF.create(window.s.current.aguardando_outros_jogadores, "Arial", 80);
         this.labelAguardandoJogadores.x = size.width / 2;
         this.labelAguardandoJogadores.y = size.height / 2 + 150;
         this.addChild(this.labelAguardandoJogadores);
@@ -138,8 +138,8 @@ var SelecaoOponenteScene = cc.Scene.extend({
         var size = cc.director.getWinSize();
 
         var id = null;
-        //this.socket = io.connect('http://177.67.83.46:8080');
-        this.socket = io.connect('http://127.0.0.1:8080');
+        this.socket = io.connect('http://177.67.83.46:8080');
+        //this.socket = io.connect('http://127.0.0.1:8080');
         this.socket.on('welcome', function (data) {
 
             id = data.id;
@@ -339,6 +339,12 @@ var SelecaoOponenteScene = cc.Scene.extend({
             y: size.height / 2 - 300,
             scale: 0.5
         });
+
+        var l = cc.LabelTTF.create(window.s.current.voltar, "Arial", 100);
+        l.x = voltar.width / 2;
+        l.y = voltar.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        voltar.addChild(l);
 
 
         var l = cc.EventListener.create({

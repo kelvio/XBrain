@@ -211,7 +211,9 @@ function obterPedrasPassiveisConquista(outer) {
         try {
             var alvo = pedras[p.linha - 1][p.coluna - 1];
             if (alvo != null && alvo.getCor() === "azul") {
+
                 passiveisConquista.push([p, alvo]);
+
             }
         } catch (e) {
 
@@ -338,45 +340,48 @@ function obterCaminhoMaisCurtoMelhorConquista(outer) {
                         //Verifica se ao se fazer uma jogada a pedra atual se tornará vulnerável
                         var vulneravel = false;
 
-                        if (outer.nivel == "dificil") {
-
-
-                            //Checa diagonal superior esquerda
-                            try {
+                        //Checa diagonal superior esquerda
+                        try {
+                            if (outer.nivel == "dificil") {
                                 if (outer.getPedras()[linha - 1][coluna - 1].getCor() == "azul") {
                                     vulneravel = true;
                                 }
-                            } catch (e) {
-
                             }
+                        } catch (e) {
 
-                            //Checa diagonal superior direita
-                            try {
-                                if (outer.getPedras()[linha - 1][coluna + 1].getCor() == "azul") {
-                                    vulneravel = true;
-                                }
-                            } catch (e) {
+                        }
 
+                        //Checa diagonal superior direita
+                        try {
+                            if (outer.getPedras()[linha - 1][coluna + 1].getCor() == "azul") {
+                                vulneravel = true;
                             }
+                        } catch (e) {
 
-                            //Checa diagonal inferior direita
-                            try {
+                        }
+
+                        //Checa diagonal inferior direita
+                        try {
+                            if (outer.nivel == "dificil") {
                                 if (outer.getPedras()[linha + 1][coluna + 1].getCor() == "azul") {
                                     vulneravel = true;
                                 }
-                            } catch (e) {
-
                             }
 
-                            //Checa diagonal inferior esquerda
-                            try {
-                                if (outer.getPedras()[linha + 1][coluna - 1].getCor() == "azul") {
-                                    vulneravel = true;
-                                }
-                            } catch (e) {
+                        } catch (e) {
 
-                            }
                         }
+
+                        //Checa diagonal inferior esquerda
+                        try {
+                            if (outer.getPedras()[linha + 1][coluna - 1].getCor() == "azul") {
+                                vulneravel = true;
+                            }
+                        } catch (e) {
+
+                        }
+
+
 
 
                         if (vulneravel && pedrasComputador.length > 1) {

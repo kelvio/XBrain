@@ -17,7 +17,7 @@ var SobreOJogoLayer = cc.LayerColor.extend({
         });
         this.addChild(bgSprite);
 
-        var titulo = cc.LabelTTF.create("Sobre o jogo", "Arial", 55);
+        var titulo = cc.LabelTTF.create(s.current.sobre_o_jogo, "Arial", 55);
         titulo.setColor(cc.color(119, 110, 101));
         titulo.x = size.width / 2;
         titulo.y = size.height / 2 + 490;
@@ -26,26 +26,7 @@ var SobreOJogoLayer = cc.LayerColor.extend({
         this.addChild(titulo, 6);
 
 
-        var texto = "\n           \"O XBrain é uma verdadeira obra para aprender e se divertir com a matemática.\n \
-        Trata-se de um jogo que articula com perfeição e precisão os\n \
-        princípios atuais e mais adequados acerca da aprendizagem e\n \
-        desenvolvimento dos conceitos de quantificação, valores e equivalências\n \
-        das operações: adição, subtração, multiplicação e divisão. \n\n\
-        Tenho o privilégio de apresentar este jogo, como um material de primeira qualidade \n\
-        que consegue articular com leveza e profundidade: teoria e prática.\n\n \
-        O conhecimento se constrói num processo...\n \
-        O desafio presente neste jogo está em favorecer ao maior número de pessoas\n \
-        a oportunidade de conhecer a matemática numa linguagem ainda mais interessante:\n \
-        a da inclusão digital.\n \
-        Divertir e aprender com X-Brain é entrar em contato com a nova visão \n \
-        paradigmática da sociedade pós-moderna: Isento de tensões, porém pleno de \n \
-        desafios e reinvenção de conceitos.\"\n\n \
-        Adélia Marise Ferreira Monti\n \
-        Pedagoga - Especialista em Piscologia da Aprendizagem e do Desenvolvimento Humano\n \
-        Educação Especial Psicopedagogia\n \
-        Mestre em Psicologia pela Universidade Católica de Brasília / Pesquisadora da Educação \n \
-        Superior - CAPES.\n\n \
-        Brasilia-DF – Brasil";
+        var texto = s.current.texto_sobre_jogo;
 
         var sobreLabel = cc.LabelTTF.create(texto, "Arial", 30);
         sobreLabel.setColor(cc.color(119, 110, 101));

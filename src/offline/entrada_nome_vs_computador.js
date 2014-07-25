@@ -115,6 +115,12 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
             scale: 0.5
         });
 
+        var l = cc.LabelTTF.create(window.s.current.voltar, "Arial", 100);
+        l.x = itemVoltar.width / 2;
+        l.y = itemVoltar.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemVoltar.addChild(l);
+
 
         var itemOk = cc.MenuItemImage.create(
             res.comecar_branco_png,
@@ -133,61 +139,16 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     scale: 1.0
                 });
 
-                //NIVEL
-                //BG
-                var bgSpriteNivel = cc.Sprite.create(res.fundo_laranja_png);
-                bgSpriteNivel.attr({
-                    x: size.width / 2,
-                    y: size.height / 2,
-                    scale: 1.0
-                });
+                //MODO
 
-                var modo = "interativo";
-                var layerNivel = cc.Layer.create();
-                layerNivel.addChild(bgSpriteNivel, 1);
+                var layer = cc.Layer.create();
 
-                var tSn = cc.LabelTTF.create("SELECIONE UM NÍVEL", "Arial", 100);
 
-                tSn.x = size.width / 2;
-                tSn.y = size.height - 130;
-                tSn.setColor(cc.color(255, 255, 255));
-                tSn.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
-
-                layerNivel.addChild(tSn, 2);
-                var itemFacil = cc.MenuItemImage.create(
-                    res.facil_png,
-                    res.facil_png,
+                var itemInterativo = cc.MenuItemImage.create(
+                    res.modo_interativo_png,
+                    res.modo_interativo_png,
                     function() {
-                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                        var scene = new GameSceneJogadorVsComputador();
-                        scene.modo = modo;
-                        scene.nivel = "facil";
-                        if (this._operacao == "soma") {
-                            scene.operacao = "+";
-                        } else if (this._operacao == "subtracao") {
-                            scene.operacao = "-";
-                        } else if (this._operacao == "multiplicacao") {
-                            scene.operacao = "x";
-                        } else if (this._operacao == "divisao") {
-                            scene.operacao = "/";
-                            scene.opcao = this._opcao;
-                        }
-
-                        scene.nomeJogador = outer.nome;
-                        cc.director.runScene(cc.TransitionFade.create(0.5, scene));
-                    },
-                    this
-                );
-                itemFacil.attr({
-                    x: size.width / 2,
-                    y: size.height / 2 + 150,
-                    scale: 1.0
-                });
-
-                var itemDificil = cc.MenuItemImage.create(
-                    res.dificil_png,
-                    res.dificil_png,
-                    function() {
+                        modo = "interativo";
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                         var scene = new GameSceneJogadorVsComputador();
                         scene.modo = modo;
@@ -209,55 +170,18 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     },
                     this
                 );
-                itemDificil.attr({
-                    x: size.width / 2,
-                    y: size.height / 2 - 100,
-                    scale: 1.0
-                });
-
-
-                var itemVoltarNivel = cc.MenuItemImage.create(
-                    res.voltar_branco_png,
-                    res.voltar_branco_png,
-                    function() {
-                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                        outer.removeChild(layerNivel);
-                    },
-                    this
-                );
-                itemVoltarNivel.attr({
-                    x: size.width / 2,
-                    y: size.height / 2 - 300,
-                    scale: 0.8
-                });
-
-                var menuNivel = cc.Menu.create(itemFacil, itemDificil, itemVoltarNivel);
-                menuNivel.setPosition(0,0);
-
-
-                layerNivel.addChild(menuNivel, 3);
-
-                //MODO
-
-                var layer = cc.Layer.create();
-
-
-                var itemInterativo = cc.MenuItemImage.create(
-                    res.modo_interativo_png,
-                    res.modo_interativo_png,
-                    function() {
-                        cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
-                        var scene = new GameSceneJogadorVsComputador();
-                        modo = "interativo";
-                        outer.addChild(layerNivel);
-                    },
-                    this
-                );
                 itemInterativo.attr({
                     x: size.width / 2,
                     y: size.height / 2 + 150,
                     scale: 1.0
                 });
+
+                var l = cc.LabelTTF.create(window.s.current.interativo, "Arial", 100);
+                l.x = itemInterativo.width / 2;
+                l.y = itemInterativo.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                itemInterativo.addChild(l);
+
 
                 var itemAutomatico = cc.MenuItemImage.create(
                     res.modo_automatico_png,
@@ -265,7 +189,23 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     function() {
                         cc.audioEngine.playEffect(res.effect_buttonClick_mp3);
                         modo = "automatico";
-                        outer.addChild(layerNivel);
+                        var scene = new GameSceneJogadorVsComputador();
+                        scene.modo = modo;
+                        scene.nivel = "dificil";
+                        if (this._operacao == "soma") {
+                            scene.operacao = "+";
+                        } else if (this._operacao == "subtracao") {
+                            scene.operacao = "-";
+                        } else if (this._operacao == "multiplicacao") {
+                            scene.operacao = "x";
+                        } else if (this._operacao == "divisao") {
+                            scene.operacao = "/";
+                            scene.opcao = this._opcao;
+                        }
+
+                        scene.nomeJogador = outer.nome;
+
+                        cc.director.runScene(cc.TransitionFade.create(0.5, scene));
                     },
                     this
                 );
@@ -275,6 +215,11 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     scale: 1.0
                 });
 
+                var l = cc.LabelTTF.create(window.s.current.automatico, "Arial", 100);
+                l.x = itemAutomatico.width / 2;
+                l.y = itemAutomatico.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                itemAutomatico.addChild(l);
 
                 var itemVoltar = cc.MenuItemImage.create(
                     res.voltar_branco_png,
@@ -290,6 +235,12 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
                     y: size.height / 2 - 300,
                     scale: 0.8
                 });
+
+                var l = cc.LabelTTF.create(window.s.current.voltar, "Arial", 100);
+                l.x = itemVoltar.width / 2;
+                l.y = itemVoltar.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                itemVoltar.addChild(l);
 
                 var menu = cc.Menu.create(itemInterativo, itemAutomatico, itemVoltar);
                 menu.setPosition(0,0);
@@ -310,11 +261,18 @@ var EntradaNomeVsComputadorScene = cc.Scene.extend({
             scale: 0.5
         });
 
+        var l = cc.LabelTTF.create(window.s.current.comecar, "Arial", 100);
+        l.x = itemOk.width / 2;
+        l.y = itemOk.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemOk.addChild(l);
+
         var menu = cc.Menu.create(itemOk, itemVoltar);
         menu.setPosition(0,0);
         this.addChild(menu);
 
-        var labelTopo = cc.LabelTTF.create("Qual o seu nome?", "Arial", 110);
+
+        var labelTopo = cc.LabelTTF.create(window.s.current.qual_seu_nome, "Arial", 110);
         labelTopo.x = size.width / 2;
         labelTopo.y = size.height / 2 + 450;
 

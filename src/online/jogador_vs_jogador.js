@@ -121,6 +121,13 @@ var GameSceneJogadorVsJogador = cc.Scene.extend({
             y: size.height / 2 - 200,
             scale: 1.0
         });
+
+        var l = cc.LabelTTF.create(s.current.sair, "Arial", 40);
+        l.x = sair.width / 2;
+        l.y = sair.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        l.setColor(cc.color(112, 112, 112));
+        sair.addChild(l);
         this.addChild(sair, 0);
         /*var recomecar = cc.Sprite.create(res.recomecar_png);
         recomecar.attr({

@@ -115,6 +115,12 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
             scale: 0.5
         });
 
+        var l = cc.LabelTTF.create(window.s.current.voltar, "Arial", 100);
+        l.x = itemVoltar.width / 2;
+        l.y = itemVoltar.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemVoltar.addChild(l);
+
 
         var itemOk = cc.MenuItemImage.create(
             res.comecar_branco_png,
@@ -166,6 +172,12 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
                     scale: 1.0
                 });
 
+                var l = cc.LabelTTF.create(window.s.current.interativo, "Arial", 100);
+                l.x = itemInterativo.width / 2;
+                l.y = itemInterativo.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                itemInterativo.addChild(l);
+
                 var itemAutomatico = cc.MenuItemImage.create(
                     res.modo_automatico_png,
                     res.modo_automatico_png,
@@ -197,6 +209,11 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
                     scale: 1.0
                 });
 
+                var l = cc.LabelTTF.create(window.s.current.automatico, "Arial", 100);
+                l.x = itemAutomatico.width / 2;
+                l.y = itemAutomatico.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                itemAutomatico.addChild(l);
 
                 var itemVoltar = cc.MenuItemImage.create(
                     res.voltar_branco_png,
@@ -212,6 +229,12 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
                     y: size.height / 2 - 300,
                     scale: 0.8
                 });
+
+                var l = cc.LabelTTF.create(window.s.current.voltar, "Arial", 100);
+                l.x = itemVoltar.width / 2;
+                l.y = itemVoltar.height / 2;
+                l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+                itemVoltar.addChild(l);
 
                 var menu = cc.Menu.create(itemInterativo, itemAutomatico, itemVoltar);
                 menu.setPosition(0,0);
@@ -232,11 +255,17 @@ var EntradaNomeVsJogadorScene = cc.Scene.extend({
             scale: 0.5
         });
 
+        var l = cc.LabelTTF.create(window.s.current.comecar, "Arial", 100);
+        l.x = itemOk.width / 2;
+        l.y = itemOk.height / 2;
+        l.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        itemOk.addChild(l);
+
         var menu = cc.Menu.create(itemOk, itemVoltar);
         menu.setPosition(0,0);
         this.addChild(menu);
 
-        var labelTopo = cc.LabelTTF.create("Qual o seu nome?", "Arial", 110);
+        var labelTopo = cc.LabelTTF.create(window.s.current.qual_seu_nome, "Arial", 110);
         labelTopo.x = size.width / 2;
         labelTopo.y = size.height / 2 + 450;
 

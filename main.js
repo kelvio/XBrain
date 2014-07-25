@@ -5,9 +5,11 @@ cc.game.onStart = function(){
     cc.LoaderScene.preload(g_resources, function () {
 
 
+        //window.s.current = window.s.en;
         cc.director.runScene(cc.TransitionFade.create(0.5, new TitleScene()));
         //var gameOverScene = new GameOverScene();
-        //gameOverScene.init({ jogador:"Kelvio", sucesso:false, pontuacao:3000, operacao: "soma"});
+
+        //gameOverScene.init({ jogador:"Kelvio", sucesso:true, pontuacao:3000, operacao: "soma"});
         //cc.director.runScene(cc.TransitionFade.create(0.5, gameOverScene));
     }, this);
 
